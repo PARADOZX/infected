@@ -99,12 +99,6 @@ require.config({
         tpl: '../tpl'
     },
 
-    map: {
-        '*': {
-            'app/models/employee': 'app/models/memory/employee'
-        }
-    },
-
     shim: {
         'backbone': {
             deps: ['underscore', 'jquery'],

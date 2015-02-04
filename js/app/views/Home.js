@@ -1,4 +1,4 @@
-define(function (require) {
+define(function (require, exports) {
 
     "use strict";
 
@@ -8,22 +8,19 @@ define(function (require) {
         // EmployeeListView    = require('app/views/EmployeeList'),
         // models              = require('app/models/employee'),
         tpl                 = require('text!tpl/Home.html'),
-
+        cookies             = require('app/cookie_management'),
         template = _.template(tpl);
-
-
+console.log(cookies.deleteCookie);
     return Backbone.View.extend({
-
+        el : '#mainContent',
         initialize: function () {
-            this.render();
-        },
-
-        render: function () {
-            console.log('home view rendered');
-        },
-
-        events: {
             
+        },
+        render: function () {
+            this.$el.html(template);
+        },
+        events: {
+            // 'click #deleteCookie' : deleteCookie
         }
 
     });

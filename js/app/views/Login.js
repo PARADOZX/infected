@@ -1,4 +1,4 @@
-define(function (require) {
+define(function (require, exports) {
 
     "use strict";
 
@@ -6,40 +6,32 @@ define(function (require) {
         _                   = require('underscore'),
         Backbone            = require('backbone'),
         Login    			= require('app/views/Login'),
-        // models              = require('app/models/employee'),
-        // tpl                 = require('text!tpl/Home.html'),
-
+        tpl                 = require('text!tpl/Login.html'),
+        cookies             = require('app/cookie_management'),
         template = _.template(tpl);
 
-
     return Backbone.View.extend({
-
+        el: '#mainContent',
         initialize: function () {
-            this.employeeList = new models.EmployeeCollection();
-            this.render();
+            cookies.setCookie("Ling");
         },
-
         render: function () {
-            this.$el.html(template());
-            this.listView = new EmployeeListView({collection: this.employeeList, el: $(".scroller", this.el)});
-            return this;
+            this.$el.html(template);
         },
-
         events: {
-            "keyup .search-key":    "search",
-            "keypress .search-key": "onkeypress"
+
         },
 
-        search: function (event) {
-            var key = $('.search-key').val();
-            this.employeeList.fetch({reset: true, data: {name: key}});
-        },
+        // search: function (event) {
+        //     var key = $('.search-key').val();
+        //     this.employeeList.fetch({reset: true, data: {name: key}});
+        // },
 
-        onkeypress: function (event) {
-            if (event.keyCode === 13) { // enter key pressed
-                event.preventDefault();
-            }
-        }
+        // onkeypress: function (event) {
+        //     if (event.keyCode === 13) { // enter key pressed
+        //         event.preventDefault();
+        //     }
+        // }
 
     });
 
