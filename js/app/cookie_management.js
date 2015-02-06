@@ -2,22 +2,31 @@ define(function (require, exports){
 
 	"use strict";
 
-	function setCookie(value)
+	function setCookie(name, value, days)
 	{
 		var now = new Date();
 		var time = now.getTime();
-		time += 3600 * 1000;
+		time += days * 24 * 3600 * 1000;
 		now.setTime(time);
-		document.cookie = 'username=' + value + '; expires=' + now.toUTCString() + '; path=/';
+		document.cookie = name + '=' + value + '; expires=' + now.toUTCString() + '; path=/';
 	}
 
-	function deleteCookie()
+	function deleteCookie(name)
 	{
-		document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+		document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 		console.log('cookie deleted');
 	}
 
+	function FBcookieExists(a){
+		var a = a.split('; ');
+        for(var i=0;i < a.length;i++) {
+            if (a[i].substr(0,4) !== 'fbsr') return false;
+            return true;
+        }
+    }
+
 	exports.setCookie = setCookie;
 	exports.deleteCookie = deleteCookie;
+	exports.FBcookieExists = FBcookieExists;
 
 });

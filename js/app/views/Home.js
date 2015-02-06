@@ -20,7 +20,8 @@ define(function (require, exports) {
         },
         events: {
             'click #deleteCookie' : cookies.deleteCookie,
-            'click #loginFB' : fb.checkLoginState
+            'click #loginFB' : fb.checkLoginState,
+            'click #logoutFB' : fb.logOut
         }
 
     });
