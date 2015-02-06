@@ -1,0 +1,26 @@
+html, body {
+ 	height: 100%;
+ 	width: 100%;
+}
+#appLogo {
+  height: 75%;
+  width: 10%;
+  margin: 5px;
+}
+#mainWrapper {
+  max-width: 960px;
+  margin: 0 auto;
+}
+#mainWrapper, #mainContent {
+  height: 100%;
+}
+#mainContent {
+
+}
+header {
+	background-color: #3399FF;
+	height: 15%;
+	width: 100%;
+	padding-top: 1px;  /* to avoid collapsing margins */
+}
+  

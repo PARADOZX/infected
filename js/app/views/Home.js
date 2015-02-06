@@ -5,12 +5,11 @@ define(function (require, exports) {
     var $                   = require('jquery'),
         _                   = require('underscore'),
         Backbone            = require('backbone'),
-        // EmployeeListView    = require('app/views/EmployeeList'),
-        // models              = require('app/models/employee'),
         tpl                 = require('text!tpl/Home.html'),
         cookies             = require('app/cookie_management'),
+        fb                  = require('app/fb'),
         template = _.template(tpl);
-console.log(cookies.deleteCookie);
+
     return Backbone.View.extend({
         el : '#mainContent',
         initialize: function () {
@@ -20,7 +19,8 @@ console.log(cookies.deleteCookie);
             this.$el.html(template);
         },
         events: {
-            // 'click #deleteCookie' : deleteCookie
+            'click #deleteCookie' : cookies.deleteCookie,
+            'click #loginFB' : fb.checkLoginState
         }
 
     });

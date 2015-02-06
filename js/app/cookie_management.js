@@ -13,7 +13,7 @@ define(function (require, exports){
 
 	function deleteCookie()
 	{
-		document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+		document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 		console.log('cookie deleted');
 	}
 

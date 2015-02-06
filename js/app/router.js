@@ -16,7 +16,6 @@ define(function (require, exports) {
             "login": "login"
         },
         initialize: function(){
-
         },
         home: function(){
             homeView.render();
