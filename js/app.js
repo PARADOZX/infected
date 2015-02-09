@@ -22,18 +22,19 @@ require.config({
     }
 });
 
-require(['jquery', 'backbone', 'app/router', 'app/cookie_management'], function ($, Backbone, Router, cookie) {
+//check for or create namespace.
+var ns = ns || {};
 
-    var router = new Router();
+require(['backbone', 'app/router', 'jquery'], function (Backbone, Router, $) {
 
-    // if(!cookie.FBcookieExists(document.cookie)) router.navigate('login', {trigger: true});
-    if(!cookie.FBcookieExists(document.cookie)) !!left off here!!//redirect to homepage.  cannot get router.navigate to work.
+        ns.router = new Router();
+
+        // $("body").on("click", ".back-button", function (event) {
+        //     event.preventDefault();
+        //     window.history.back();
+        // });
+
+        Backbone.history.start();
         
-    // $("body").on("click", ".back-button", function (event) {
-    //     event.preventDefault();
-    //     window.history.back();
-    // });
-
-    Backbone.history.start();
 });
 

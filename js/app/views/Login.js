@@ -5,20 +5,20 @@ define(function (require, exports) {
     var $                   = require('jquery'),
         _                   = require('underscore'),
         Backbone            = require('backbone'),
-        Login    			= require('app/views/Login'),
         tpl                 = require('text!tpl/Login.html'),
+        cookie              = require('app/cookie_management'),
+        fb                  = require('app/fb'),
         template = _.template(tpl);
-    
+
     return Backbone.View.extend({
         el: '#mainContent',
-        initialize: function () {
-            
-        },
         render: function () {
             this.$el.html(template);
         },
         events: {
-           
+            'click #deleteCookie' : cookie.deleteCookie,
+            'click #loginFB' : fb.checkLoginState,
+            'click #logoutFB' : fb.logOut
         },
 
         // onkeypress: function (event) {

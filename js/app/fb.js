@@ -2,19 +2,26 @@ define(function (require, exports){
 
 	"use strict";
 
-	var loadSDK 		= require('facebook'),
-		cookies 		= require('app/cookie_management');		
+	var $               = require('jquery'),
+		loadSDK 		= require('facebook'),
+		cookie 			= require('app/cookie_management');		
 
 function checkLoginState()
 {
 	FB.login(function(response){
 
-		console.log(response);
+		console.log(response);	//debug
 		    
 		if (response.status === 'connected') {
-		    // console.log(response.authResponse.accessToken);
+		    // console.log(response.authResponse.accessToken);	//debug
 		    getLikes();
-		    // cookies.setCookies('', '', 30);
+		    try{
+		    	if(cookie.FBcookieExists(document.cookie)) {
+		    		ns.router.navigate('', true);
+		    	} else alert('Error setting or finding cookie.  Please retry log in.'); 
+			} catch(e) {
+				alert('Error setting or finding cookie.  Please retry log in.'); 
+			}
 		} else if (response.status === 'not_authorized') {
 		    document.getElementById('status').innerHTML = 'Please log ' +
 		    'into this app.';

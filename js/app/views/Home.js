@@ -6,24 +6,21 @@ define(function (require, exports) {
         _                   = require('underscore'),
         Backbone            = require('backbone'),
         tpl                 = require('text!tpl/Home.html'),
-        cookies             = require('app/cookie_management'),
-        fb                  = require('app/fb'),
+        cookie             = require('app/cookie_management'),
         template = _.template(tpl);
 
     return Backbone.View.extend({
         el : '#mainContent',
         initialize: function () {
-            
         },
         render: function () {
-            this.$el.html(template);
+            if(!cookie.FBcookieExists(document.cookie)) {
+                ns.router.navigate('login', true); 
+            } else this.$el.html(template);       
         },
         events: {
-            'click #deleteCookie' : cookies.deleteCookie,
-            'click #loginFB' : fb.checkLoginState,
-            'click #logoutFB' : fb.logOut
+          
         }
-
     });
 
 });
