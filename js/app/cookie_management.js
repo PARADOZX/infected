@@ -37,7 +37,6 @@ define(function (require, exports){
         }
     }
 
-
 	exports.setCookie = setCookie;
 	exports.deleteCookie = deleteCookie;
 	exports.FBcookieExists = FBcookieExists;

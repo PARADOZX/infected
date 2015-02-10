@@ -4,24 +4,39 @@ define(function (require, exports){
 
 	var $               = require('jquery'),
 		loadSDK 		= require('facebook'),
-		cookie 			= require('app/cookie_management');		
+		_               = require('underscore'),
+        Backbone        = require('backbone'),
+		HomeView        = require('app/views/Home'),
+		cookie 			= require('app/cookie_management');
 
 function checkLoginState()
 {
-	FB.login(function(response){
+	
+	var fbData = {};
 
-		console.log(response);	//debug
-		    
+	FB.login(function(response){
+		fbData = response;
 		if (response.status === 'connected') {
 		    // console.log(response.authResponse.accessToken);	//debug
-		    getLikes();
-		    try{
-		    	if(cookie.FBcookieExists(document.cookie)) {
-		    		ns.router.navigate('', true);
-		    	} else alert('Error setting or finding cookie.  Please retry log in.'); 
-			} catch(e) {
-				alert('Error setting or finding cookie.  Please retry log in.'); 
-			}
+			FB.api('/me', function (me){
+				if (response && !response.error) {
+					fbData.me = me;
+					FB.api('/me/likes', function (likes){
+						if (response && !response.error) {
+							fbData.likes = likes;
+							try{
+						    	if(cookie.FBcookieExists(document.cookie)) {
+						    		ns.router.navigate('', false); 
+						    		var homeView = new HomeView({facebookData : fbData});
+						    		homeView.render();
+						    	} else alert('Error setting or finding cookie.  Please retry log in.'); 
+							} catch(e) {
+								alert('Error setting or finding cookie.  Please retry log in.'); 
+							}
+						}
+					});
+				}
+			});
 		} else if (response.status === 'not_authorized') {
 		    document.getElementById('status').innerHTML = 'Please log ' +
 		    'into this app.';
@@ -30,21 +45,6 @@ function checkLoginState()
 		    'into Facebook.';
 		}
 	}, {scope: 'user_likes'});
-}
-
-function getLikes()
-{
-	FB.api('/me', function (response){
-		if (response && !response.error) {
-			console.log(response);
-		}
-	})
-
-	FB.api('/me/likes', function (response){
-		if (response && !response.error) {
-			console.log(response);
-		}
-	})
 }
 
 function logOut()

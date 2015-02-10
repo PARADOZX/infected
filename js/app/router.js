@@ -5,10 +5,9 @@ define(function (require, exports) {
     var $           = require('jquery'),
         Backbone    = require('backbone'),
         HomeView    = require('app/views/Home'),
-        LoginView   = require('app/views/Login'),
-        homeView = new HomeView(),
-        loginView = new LoginView();
-
+        cookie      = require('app/cookie_management'),
+        LoginView   = require('app/views/Login');
+        
     return Backbone.Router.extend({
 
         routes: {
@@ -18,9 +17,15 @@ define(function (require, exports) {
         initialize: function(){
         },
         home: function(){
-            homeView.render();
+            if(!cookie.FBcookieExists(document.cookie)) {
+                ns.router.navigate('login', true); 
+            } else {
+                var homeView = new HomeView();
+                homeView.render();
+            }
         },
         login: function(){
+            var loginView = new LoginView();
             loginView.render();
         }
 

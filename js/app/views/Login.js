@@ -12,15 +12,14 @@ define(function (require, exports) {
 
     return Backbone.View.extend({
         el: '#mainContent',
-        render: function () {
+        render: function() {
             this.$el.html(template);
         },
         events: {
             'click #deleteCookie' : cookie.deleteCookie,
             'click #loginFB' : fb.checkLoginState,
             'click #logoutFB' : fb.logOut
-        },
-
+        }
         // onkeypress: function (event) {
         //     if (event.keyCode === 13) { // enter key pressed
         //         event.preventDefault();
