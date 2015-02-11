@@ -9,6 +9,7 @@ define(function (require, exports) {
         Interests           = require('app/collections/Interests'),
         cookie              = require('app/cookie_management'),
         namespace           = require('app/namespace'),
+        fb                  = require('app/fb2'),
         template = _.template(tpl);
 
     return Backbone.View.extend({
@@ -17,13 +18,15 @@ define(function (require, exports) {
             
             this.options = options || {};
 
+            //facebookData object exists only if user had to sign in.
             if(this.options.facebookData) {
                 console.log(this.options.facebookData);
             } else {
                 if(cookie.FBcookieExists) {
                     var sr = cookie.getCookie('fbsr');
                     if (sr) {
-                        cookie.parseSignedRequest(sr);
+                        // cookie.parseSignedRequest(sr);
+                        // fb.getFBdata();
                     } else alert('Error parsing cookie.  Please try again.');
                 } else alert('Error setting or finding cookie.  Please retry log in.')
             }
