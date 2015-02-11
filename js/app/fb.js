@@ -7,6 +7,7 @@ define(function (require, exports){
 		_               = require('underscore'),
         Backbone        = require('backbone'),
 		HomeView        = require('app/views/Home'),
+		namespace		= require('app/namespace'),
 		cookie 			= require('app/cookie_management');
 
 function checkLoginState()
@@ -24,15 +25,11 @@ function checkLoginState()
 					FB.api('/me/likes', function (likes){
 						if (response && !response.error) {
 							fbData.likes = likes;
-							try{
-						    	if(cookie.FBcookieExists(document.cookie)) {
-						    		ns.router.navigate('', false); 
-						    		var homeView = new HomeView({facebookData : fbData});
-						    		homeView.render();
-						    	} else alert('Error setting or finding cookie.  Please retry log in.'); 
-							} catch(e) {
-								alert('Error setting or finding cookie.  Please retry log in.'); 
-							}
+					    	if(cookie.FBcookieExists(document.cookie)) {
+					    		namespace.router.navigate('', false); 
+					    		var homeView = new HomeView({facebookData : fbData});
+					    		homeView.render();
+					    	} else alert('Error setting or finding cookie.  Please retry log in.'); 
 						}
 					});
 				}
@@ -46,6 +43,7 @@ function checkLoginState()
 		}
 	}, {scope: 'user_likes'});
 }
+
 
 function logOut()
 {

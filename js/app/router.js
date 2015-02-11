@@ -6,6 +6,7 @@ define(function (require, exports) {
         Backbone    = require('backbone'),
         HomeView    = require('app/views/Home'),
         cookie      = require('app/cookie_management'),
+        namespace   = require('app/namespace'),
         LoginView   = require('app/views/Login');
         
     return Backbone.Router.extend({
@@ -18,7 +19,7 @@ define(function (require, exports) {
         },
         home: function(){
             if(!cookie.FBcookieExists(document.cookie)) {
-                ns.router.navigate('login', true); 
+                namespace.router.navigate('login', true); 
             } else {
                 var homeView = new HomeView();
                 homeView.render();

@@ -13,6 +13,20 @@ define(function (require, exports){
 		document.cookie = name + '=' + value + '; expires=' + now.toUTCString() + '; path=/';
 	}
 
+	function getCookie(cname) {
+	    var name = cname,
+	    	ca = document.cookie.split(';');
+	    for(var i=0; i<ca.length; i++) {
+	        var c = ca[i];
+	        while (c.charAt(0)==' ') c = c.substring(1);
+	        if(c.slice(0,4) === name) {
+	        	var d = c.split('='),
+	        		value = d[1];
+				return value;	        	
+	        }
+	    }
+	    return "";
+	}
 
 	function deleteCookie(name)
 	{
@@ -37,9 +51,21 @@ define(function (require, exports){
         }
     }
 
+	function parseSignedRequest(srValue)
+	{
+		var sr = srValue.split('.', 2), 
+			encodedSig = sr[0], 
+			payload = sr[1];
+
+	 	console.log(encodedSig + ' || ' + payload);
+	}
+
 	exports.setCookie = setCookie;
+	exports.getCookie = getCookie;
 	exports.deleteCookie = deleteCookie;
 	exports.FBcookieExists = FBcookieExists;
+	exports.parseSignedRequest = parseSignedRequest;
+
 
 
 });
