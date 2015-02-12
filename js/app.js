@@ -22,7 +22,7 @@ require.config({
     }
 });
 
-require(['backbone', 'app/router', 'jquery', 'app/namespace'], function (Backbone, Router, $, namespace) {
+require(['backbone', 'app/router', 'jquery', 'app/namespace', 'app/fb'], function (Backbone, Router, $, namespace, fb) {
 
         namespace.router = new Router();
 

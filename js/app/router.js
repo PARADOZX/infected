@@ -18,11 +18,16 @@ define(function (require, exports) {
         initialize: function(){
         },
         home: function(){
-            if(!cookie.FBcookieExists(document.cookie)) {
-                namespace.router.navigate('login', true); 
-            } else {
+            //debug v.1
+            // if(!cookie.FBcookieExists(document.cookie)) {
+            //     namespace.router.navigate('login', true); 
+            // } else {
+            //     var homeView = new HomeView();
+            //     homeView.render();
+            // }
+            if(cookie.FBcookieExists(document.cookie)) {
                 var homeView = new HomeView();
-                homeView.render();
+                    homeView.render();
             }
         },
         login: function(){
