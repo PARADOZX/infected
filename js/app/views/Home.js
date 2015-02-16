@@ -42,7 +42,10 @@ define(function (require, exports) {
 
             this.$el.html(template);  
 
+            //if fbData populated with facebook information from FB.login
             if(namespace.fbData) {
+
+                //if browser has geolocation
                 if(navigator.geolocation) {
                     
                     //get current position of user.
@@ -51,19 +54,36 @@ define(function (require, exports) {
                         //send facebook data and position to server
                         that.sendData(namespace.fbData, position)
                             .done(function(){ 
+
+                                //if server update / query successful...
                                 that.collection = new Interests;
+
                                 // that.collection.fetch();
-                                
+
+                                //dummy data
                                 that.collection.add([
-                                    {name: 'Ling', },
-                                    {name: 'Mike', }
+                                    {
+                                        personalInfo: {
+                                            firstName: 'Ling', 
+                                            lastName: 'Chiang'
+                                        },
+                                        interests: {
+                                            snowboarding: {
+
+                                            }
+                                        }
+                                    }
                                 ]);
+
+                                //if server update / query fails...
+                                //....
                             })
+                            //ajax fail.
                             .fail(that.fail);
 
                     });
-                }
-            } 
+                } //if geolocation... add else 
+            } //if namespace.fbData ... add else
      
         },
         events: {

@@ -18,8 +18,8 @@ define(function (require, exports) {
         initialize: function(){
         },
         home: function(){
-            //prevents rendering of homeView unless logged into Facebook.
-            if(cookie.FBcookieExists(document.cookie)) {
+            //prevents rendering of homeView unless logged into Facebook and fbData set.
+            if(cookie.FBcookieExists(document.cookie) && namespace.fbData) {
                 var homeView = new HomeView();
                     homeView.render();
             }

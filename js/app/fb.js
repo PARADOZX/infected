@@ -67,6 +67,9 @@ define(function (require, exports){
 
 function statusChangeCallback(response) {
     if (response.status === 'connected') {
+    	//although already logged in to FB, route to login (or any other page) since backbone
+    	//will not route to homepage in getFbInfo (for re-rendering) if already on homepage.
+    	namespace.router.navigate('login', false);  
     	getFbInfo(response);
     } else if (response.status === 'not_authorized') {
     	namespace.router.navigate('', true); 
@@ -109,7 +112,6 @@ window.fbAsyncInit = function() {
   
 function getFbInfo(response)
 {
-	
 	var fbData = {};
 
 	fbData = response;
