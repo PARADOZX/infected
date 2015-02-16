@@ -18,13 +18,7 @@ define(function (require, exports) {
         initialize: function(){
         },
         home: function(){
-            //debug v.1
-            // if(!cookie.FBcookieExists(document.cookie)) {
-            //     namespace.router.navigate('login', true); 
-            // } else {
-            //     var homeView = new HomeView();
-            //     homeView.render();
-            // }
+            //prevents rendering of homeView unless logged into Facebook.
             if(cookie.FBcookieExists(document.cookie)) {
                 var homeView = new HomeView();
                     homeView.render();

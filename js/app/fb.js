@@ -73,6 +73,7 @@ function statusChangeCallback(response) {
     	document.getElementById('status').innerHTML = 'Please log ' +
         'into this app.';
     } else {
+    	//route to login.html and call FB.login if not logged in.
     	namespace.router.navigate('login', true); 
     	document.getElementById('status').innerHTML = 'Please log ' +
         'into Facebook.';

@@ -7,22 +7,16 @@ define(function (require, exports) {
         Backbone            = require('backbone'),
         tpl                 = require('text!tpl/Home.html'),
         namespace           = require('app/namespace'),
-        geolocation         = require('app/geolocation'),
+        Interests           = require('app/collections/Interests'),
+        // geolocation         = require('app/geolocation'),
         template = _.template(tpl);
 
     return Backbone.View.extend({
         el : '#mainContent',
         initialize: function(options) {
             
-            this.options = options || {};
-
-            if(namespace.fbData) {
-                //send fbData / geolocation to server
-
-                //test geolocation
-                geolocation.getLocation();
-            } 
-
+            // this.options = options || {};
+       
             //facebookData object exists only if user had to sign in.
             //debug v.1
             // if(this.options.facebookData) {
@@ -43,11 +37,48 @@ define(function (require, exports) {
 
         },
         render: function() {
-            this.$el.html(template);       
+
+            var that = this;
+
+            this.$el.html(template);  
+
+            if(namespace.fbData) {
+                if(navigator.geolocation) {
+                    
+                    //get current position of user.
+                    navigator.geolocation.getCurrentPosition(function(position){
+
+                        //send facebook data and position to server
+                        that.sendData(namespace.fbData, position)
+                            .done(function(){ 
+                                that.collection = new Interests;
+                                // that.collection.fetch();
+                                
+                                that.collection.add([
+                                    {name: 'Ling', },
+                                    {name: 'Mike', }
+                                ]);
+                            })
+                            .fail(that.fail);
+
+                    });
+                }
+            } 
+     
         },
         events: {
           
         },
+        sendData: function(fbData, position) {
+            return $.ajax({
+                url: '', //set URL
+                type: 'post',
+                data: {fbData: fbData, position: position}
+            });
+        },
+        fail: function() {
+            alert('Server error.  Please try again.');
+        }
 
     });
 

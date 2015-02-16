@@ -8,10 +8,10 @@ define(function (require, exports) {
         Interest    		= require('app/models/Interest');
 
     return Backbone.Collection.extend({
-        url: '', //define URL to backend 
+        url: 'what.php', //define URL to backend 
         model: Interest,
 		initialize : function()	{
-
+            console.log('collection initialized');
 		}
     });
 
