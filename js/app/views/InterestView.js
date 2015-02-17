@@ -16,6 +16,12 @@ define(function (require, exports) {
         render: function() {
             this.$el.html(template(this.model.toJSON()));
             return this;
+        },
+        events: {
+            'click .matches-interests' : function(e) {
+                var target = e.target;
+                $(target).find('.matches-users').css('display', 'block');
+            }
         }
     });
 

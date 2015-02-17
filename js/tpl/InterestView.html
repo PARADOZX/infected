@@ -1,5 +1,8 @@
-<%= interest %>
-<% _.each(matches, function(matches) { %>
-	<p><%= matches.name %></p>
-	<p><%= matches.city %></p>
-<% }); %>
+<div class="matches-interests"><%= interest %>
+	<div class="matches-users none">
+		<% _.each(matches, function(matches) { %>
+			<p><%= matches.name %></p>
+			<p><%= matches.city %></p>
+		<% }); %>
+	</div>
+</div>

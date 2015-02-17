@@ -14,8 +14,17 @@ html, body {
 #mainWrapper, #mainContent {
   height: 100%;
 }
-#mainContent {
+#mainContent li {
+  list-style-type: none;
+  border: 1px black solid;
+  margin-top: 10px;
+  padding: 5px;
+}
+.matches-users {
 
+}
+.none {
+  display: none;
 }
 header {
 	background-color: #3399FF;
