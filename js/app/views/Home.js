@@ -17,7 +17,7 @@ define(function (require, exports) {
 
             this.collection = new Interests();
 
-            this.listenTo(this.collection, 'add', this.addOne);
+            this.listenTo(this.collection, 'add', this.add);
             
             // this.options = options || {};
        
@@ -42,6 +42,8 @@ define(function (require, exports) {
         },
         render: function() {
 
+            $('#mainContent').empty();
+
             var that = this;
 
             //if fbData populated with facebook information from FB.login
@@ -62,14 +64,30 @@ define(function (require, exports) {
                                 //dummy data
                                 that.collection.add([
                                     {
-                                        firstName: 'Jane',
-                                        lastName: 'Smith',
-                                        interests: ['snowboarding', 'hiking']
+                                        interest: 'Snowboarding',
+                                        matches: [
+                                            { 
+                                                name: 'Ling Chiang',
+                                                city: 'Gaithersburg'
+                                            },
+                                            {
+                                                name: 'Mike Tran',
+                                                city: 'Rockville'
+                                            }
+                                        ]
                                     },
                                     {
-                                        firstName: 'Jon',
-                                        lastName: 'Doe',
-                                        interests: ['cooking', 'snowboarding']
+                                        interest: 'Taylor Swift',
+                                        matches: [
+                                            {
+                                                name: 'Koshie Macias',
+                                                city: 'Alexandria'
+                                            },
+                                            {
+                                                name: 'Max Cho',
+                                                city: 'Pasadena'
+                                            }
+                                        ]
                                     }
                                 ]);
 
@@ -98,8 +116,8 @@ define(function (require, exports) {
         fail: function() {
             alert('Server error.  Please try again.');
         },
-        addOne: function(interest) {
-            var view = new InterestView({model: interest});
+        add: function(model) {
+            var view = new InterestView({model: model});
             this.$el.append(view.render().el);
         }
 

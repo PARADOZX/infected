@@ -14,7 +14,7 @@ define(function (require, exports) {
 
         }, 
         render: function() {
-            this.$el.html(this.model);
+            this.$el.html(template(this.model.toJSON()));
             return this;
         }
     });

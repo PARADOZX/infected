@@ -1,1 +1,5 @@
-<h2>Interest View template</h2>
+<%= interest %>
+<% _.each(matches, function(matches) { %>
+	<p><%= matches.name %></p>
+	<p><%= matches.city %></p>
+<% }); %>
