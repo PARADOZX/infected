@@ -8,12 +8,16 @@ define(function (require, exports) {
         tpl                 = require('text!tpl/Home.html'),
         namespace           = require('app/namespace'),
         Interests           = require('app/collections/Interests'),
-        // geolocation         = require('app/geolocation'),
+        InterestView        = require('app/views/InterestView'),
         template = _.template(tpl);
 
     return Backbone.View.extend({
         el : '#mainContent',
         initialize: function(options) {
+
+            this.collection = new Interests();
+
+            this.listenTo(this.collection, 'add', this.addOne);
             
             // this.options = options || {};
        
@@ -40,8 +44,6 @@ define(function (require, exports) {
 
             var that = this;
 
-            this.$el.html(template);  
-
             //if fbData populated with facebook information from FB.login
             if(namespace.fbData) {
 
@@ -55,26 +57,23 @@ define(function (require, exports) {
                         that.sendData(namespace.fbData, position)
                             .done(function(){ 
 
-                                //if server update / query successful...
-                                that.collection = new Interests;
-
                                 // that.collection.fetch();
 
                                 //dummy data
                                 that.collection.add([
                                     {
-                                        personalInfo: {
-                                            firstName: 'Ling', 
-                                            lastName: 'Chiang'
-                                        },
-                                        interests: {
-                                            snowboarding: {
-
-                                            }
-                                        }
+                                        firstName: 'Jane',
+                                        lastName: 'Smith',
+                                        interests: ['snowboarding', 'hiking']
+                                    },
+                                    {
+                                        firstName: 'Jon',
+                                        lastName: 'Doe',
+                                        interests: ['cooking', 'snowboarding']
                                     }
                                 ]);
 
+                                console.log(that.collection);
                                 //if server update / query fails...
                                 //....
                             })
@@ -98,6 +97,10 @@ define(function (require, exports) {
         },
         fail: function() {
             alert('Server error.  Please try again.');
+        },
+        addOne: function(interest) {
+            var view = new InterestView({model: interest});
+            this.$el.append(view.render().el);
         }
 
     });
