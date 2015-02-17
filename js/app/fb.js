@@ -3,7 +3,7 @@ define(function (require, exports){
 	"use strict";
 
 	var $               = require('jquery'),
-		loadSDK 		= require('facebook'),
+		// loadSDK 		= require('facebook'),  //debug v.1
 		_               = require('underscore'),
         Backbone        = require('backbone'),
 		HomeView        = require('app/views/Home'),
@@ -108,6 +108,15 @@ window.fbAsyncInit = function() {
 	});
 
 };
+
+//debug v.1
+(function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 
   
 function getFbInfo(response)

@@ -5,7 +5,8 @@ require.config({
     paths: {
         app: '../app',
         tpl: '../tpl',
-        'facebook': 'http://connect.facebook.net/en_US/all'  //  remove http: when not on localhost
+        //debug v.1
+        // 'facebook': 'http://connect.facebook.net/en_US/all'  //  remove http: when not on localhost
     },
 
     shim: {
@@ -16,6 +17,7 @@ require.config({
         'underscore': {
             exports: '_'
         },
+        //debug v.1 comment out 3 lines below
         'facebook' : {
             exports: 'FB'
         }
