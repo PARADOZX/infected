@@ -7,6 +7,9 @@ html, body {
   width: 10%;
   margin: 5px;
 }
+.right {
+  float: right;
+}
 #mainWrapper {
   max-width: 960px;
   margin: 0 auto;
@@ -20,8 +23,13 @@ html, body {
   margin-top: 10px;
   padding: 5px;
 }
+.matches-interests {
+}
+.matches-userslist {
+}
 .matches-users {
-
+  border: 1px black dotted;
+  margin: 10px;
 }
 .none {
   display: none;

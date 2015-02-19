@@ -1,8 +1,11 @@
 <div class="matches-interests"><%= interest %>
-	<div class="matches-users none">
+	<div id="collapse" class="collapse none right">...</div>
+	<div class="matches-userslist none">
 		<% _.each(matches, function(matches) { %>
-			<p><%= matches.name %></p>
-			<p><%= matches.city %></p>
+			<div class="matches-users">
+				<p><%= matches.name %></p>
+				<p><%= matches.city %></p>
+			</div>
 		<% }); %>
 	</div>
 </div>

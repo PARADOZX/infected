@@ -19,8 +19,19 @@ define(function (require, exports) {
         },
         events: {
             'click .matches-interests' : function(e) {
-                var target = e.target;
-                $(target).find('.matches-users').css('display', 'block');
+                $(e.target)
+                    .find('.matches-userslist')
+                        .css('display', 'block')
+                    .end()
+                    .find('.collapse')
+                        .css('display', 'block');
+            },
+            'click .collapse' : function(e) {
+                $(e.target)
+                    .next()
+                        .css('display', 'none')
+                    .end()
+                    .css('display', 'none');
             }
         }
     });
