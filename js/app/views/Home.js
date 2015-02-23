@@ -57,8 +57,8 @@ define(function (require, exports) {
 
                         //send facebook data and position to server
                         that.sendData(namespace.fbData, position)
-                            .done(function(){ 
-
+                            .done(function(data){ 
+                                console.log(data);
                                 // that.collection.fetch();
 
                                 //dummy data
@@ -108,7 +108,8 @@ define(function (require, exports) {
         },
         sendData: function(fbData, position) {
             return $.ajax({
-                url: '', //set URL
+                url: 'http://localhost:3000', //set URL
+                // url: '', //set URL
                 type: 'post',
                 data: {fbData: fbData, position: position}
             });

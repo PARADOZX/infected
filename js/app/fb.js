@@ -3,47 +3,12 @@ define(function (require, exports){
 	"use strict";
 
 	var $               = require('jquery'),
-		// loadSDK 		= require('facebook'),  //debug v.1
+		// loadSDK 		= require('facebook'),  
 		_               = require('underscore'),
         Backbone        = require('backbone'),
 		HomeView        = require('app/views/Home'),
-		namespace		= require('app/namespace');
-		// cookie 			= require('app/cookie_management');
-
-// function checkLoginState()
-// {
-	
-// 	var fbData = {};
-
-// 	FB.login(function(response){
-// 		fbData = response;
-// 		if (response.status === 'connected') {
-// 		    // console.log(response.authResponse.accessToken);	//debug
-// 			FB.api('/me', function (me){
-// 				if (response && !response.error) {
-// 					fbData.me = me;
-// 					FB.api('/me/likes', function (likes){
-// 						if (response && !response.error) {
-// 							fbData.likes = likes;
-// 					    	if(cookie.FBcookieExists(document.cookie)) {
-// 					    		namespace.router.navigate('', false); 
-// 					    		var homeView = new HomeView({facebookData : fbData});
-// 					    		homeView.render();
-// 					    	} else alert('Error setting or finding cookie.  Please retry log in.'); 
-// 						}
-// 					});
-// 				}
-// 			});
-// 		} else if (response.status === 'not_authorized') {
-// 		    document.getElementById('status').innerHTML = 'Please log ' +
-// 		    'into this app.';
-// 		} else {
-// 		    document.getElementById('status').innerHTML = 'Please log ' +
-// 		    'into Facebook.';
-// 		}
-// 	}, {scope: 'user_likes'});
-// }
-
+		namespace		= require('app/namespace'),
+		cookie 			= require('app/cookie_management');	// v.2
 
 // function logOut()
 // {
@@ -52,18 +17,6 @@ define(function (require, exports){
 // 	});
 // }
 
-// window.fbAsyncInit = function() 
-// {
-//     FB.init({
-//         appId      : '748346081885443',
-//         xfbml      : true,
-//         cookie     : true,
-//     	version    : 'v2.2'
-// 	});
-// };
-
-// exports.checkLoginState = checkLoginState;
-// exports.logOut = logOut;
 
 function statusChangeCallback(response) {
     if (response.status === 'connected') {
@@ -102,14 +55,13 @@ window.fbAsyncInit = function() {
 	    version    : 'v2.1' // use version 2.1
 	});
 
-
-	FB.getLoginStatus(function(response) {
-	    statusChangeCallback(response);
-	});
-
+	if(cookie.FBcookieExists(document.cookie)) {	//v.2
+		FB.getLoginStatus(function(response) { 	
+		    statusChangeCallback(response);
+		});
+	}
 };
 
-//debug v.1
 (function(d, s, id){
          var js, fjs = d.getElementsByTagName(s)[0];
          if (d.getElementById(id)) {return;}

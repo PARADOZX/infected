@@ -15,13 +15,19 @@ define(function (require, exports) {
             "": "home",
             "login": "login"
         },
-        initialize: function(){
-        },
         home: function(){
             //prevents rendering of homeView unless logged into Facebook and fbData set.
-            if(cookie.FBcookieExists(document.cookie) && namespace.fbData) {
+            if(cookie.FBcookieExists(document.cookie) && namespace.fbData) {  
+                console.log(namespace.fbData);   
                 var homeView = new HomeView();
                     homeView.render();
+            } else {
+                if(!cookie.FBcookieExists(document.cookie)) {  // v.2
+                    var loginView = new LoginView();    
+                    loginView.render();
+                } else {
+                    //if logged into facebook but fbData NOT loaded; redirect or alert an error message
+                }
             }
         },
         login: function(){
