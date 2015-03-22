@@ -12,7 +12,7 @@ define(function (require, exports) {
         template = _.template(tpl);
 
     return Backbone.View.extend({
-        el : '#mainContent',
+        // el : '#mainList',  //not defined b/c #mainList is added dynamically below.
         initialize: function(options) {
 
             this.collection = new Interests();
@@ -42,7 +42,7 @@ define(function (require, exports) {
         },
         render: function() {
 
-            $('#mainContent').empty();
+            $('#mainContent').empty().append('<ul id="mainList"></ul>');
 
             var that = this;
 
@@ -51,54 +51,74 @@ define(function (require, exports) {
 
                 //if browser has geolocation
                 if(navigator.geolocation) {
-                    
+
                     //get current position of user.
                     navigator.geolocation.getCurrentPosition(function(position){
+                        alert('called get current position');      //live  -- THIS IS THE PROBLEM!!! DOES NOT WORK ON MOBILE
 
                         //send facebook data and position to server
                         that.sendData(namespace.fbData, position)
                             .done(function(data){ 
-                                console.log(data);
-                                // that.collection.fetch();
+                                // console.log(data);
 
-                                //dummy data
-                                that.collection.add([
-                                    {
-                                        interest: 'Snowboarding',
-                                        matches: [
-                                            { 
-                                                name: 'Ling Chiang',
-                                                city: 'Gaithersburg'
-                                            },
-                                            {
-                                                name: 'Mike Tran',
-                                                city: 'Rockville'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        interest: 'Taylor Swift',
-                                        matches: [
-                                            {
-                                                name: 'Koshie Macias',
-                                                city: 'Alexandria'
-                                            },
-                                            {
-                                                name: 'Max Cho',
-                                                city: 'Pasadena'
-                                            }
-                                        ]
+                                //fetch query results from server after facebook data and position 
+                                //successfully sent to server 
+                                that.collection.fetch({        //THIS IS REDUNDANT MAYbE??   
+                                    success: function(coll, response) {
+
                                     }
-                                ]);
+                                });
 
-                                console.log(that.collection);
+                                // that.collection.add([       //live
+                                //     {
+                                //         interest: 'Snowboarding',
+                                //         matches: [
+                                //             { 
+                                //                 name: 'Ling Chiang',
+                                //                 city: 'Gaithersburg'
+                                //     },
+                                //     {
+                                //         name: 'Mike Tran',
+                                //         city: 'Rockville'
+                                //             }
+                                //         ]
+                                //     },
+                                //     {
+                                //         interest: 'Some band',
+                                //         matches: [
+                                //             {
+                                //                 name: 'Ling Chiang',
+                                //                 city: 'Gaithersburg'
+                                //             },
+                                //             {
+                                //                 name: 'Max Cho',
+                                //                 city: 'Pasadena'
+                                //             }
+                                //         ]
+                                //     },
+                                //     {
+                                //         interest: 'Taylor Swift',
+                                //         matches: [
+                                //             {
+                                //                 name: 'Koshie Macias',
+                                //                 city: 'Alexandria'
+                                //             },
+                                //             {
+                                //                 name: 'Max Cho',
+                                //                 city: 'Pasadena'
+                                //             }
+                                //         ]
+                                //     }
+
+                                // ]);
+
                                 //if server update / query fails...
                                 //....
                             })
                             //ajax fail.
                             .fail(that.fail);
 
-                    });
+                    }, that.failgeolocation, {timeout: 10000, enableHighAccuracy: true});  //navigator.getCurrentPosition error callback and timeout option
                 } //if geolocation... add else 
             } //if namespace.fbData ... add else
      
@@ -109,17 +129,21 @@ define(function (require, exports) {
         sendData: function(fbData, position) {
             return $.ajax({
                 url: 'http://localhost:3000', //set URL
-                // url: '', //set URL
-                type: 'post',
+                // url: '', //set url          //live
+                type: 'get',
                 data: {fbData: fbData, position: position}
             });
         },
         fail: function() {
             alert('Server error.  Please try again.');
         },
+        failgeolocation: function() {
+            alert('Failed to obtain geolocation.'); 
+        },
         add: function(model) {
-            var view = new InterestView({model: model});
-            this.$el.append(view.render().el);
+            var view = new InterestView({model: model});  
+            // this.$('#mainList').append(view.render().el); 
+            $('#mainList').append(view.render().el); 
         }
 
     });

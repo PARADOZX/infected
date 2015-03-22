@@ -1,11 +1,24 @@
-<div class="matches-interests"><%= interest %>
-	<div id="collapse" class="collapse none right">...</div>
+<div class="matches-interests">
+	<div class="matches-top"><%= interest %><img class="right icon-expand" src="pics/icon/plus.svg" /></div>
 	<div class="matches-userslist none">
+		<ul>
 		<% _.each(matches, function(matches) { %>
-			<div class="matches-users">
-				<p><%= matches.name %></p>
-				<p><%= matches.city %></p>
-			</div>
+			<li class="matches-users">
+				<div class="pic-holder">
+					<img src="pics/profile_pic.png" />
+                </div> 
+				<div class="user-info">
+					<div class="user-nal"><%= matches.name %>, <%= matches.age %>, <%= matches.city %>, MD</div>
+ 					<div class="user-distance">10 miles away</div>
+				    <div class="user-quote">"This is user's awesome quote"</div>
+				</div>
+				<div class="user-access">
+					<button>See Profile</button>
+				</div>
+			</li>
 		<% }); %>
+		</ul>
 	</div>
 </div>
+
+

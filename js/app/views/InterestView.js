@@ -20,18 +20,21 @@ define(function (require, exports) {
         events: {
             'click .matches-interests' : function(e) {
                 $(e.target)
-                    .find('.matches-userslist')
+                    .next()
                         .css('display', 'block')
                     .end()
-                    .find('.collapse')
-                        .css('display', 'block');
+                    .find('.icon-expand')
+                        .attr('src', 'pics/icon/three_dots.svg')
+                    .addClass('collapse');
             },
             'click .collapse' : function(e) {
                 $(e.target)
-                    .next()
+                    .parent().next()
                         .css('display', 'none')
                     .end()
-                    .css('display', 'none');
+                    .find('.icon-expand')
+                        .attr('src', 'pics/icon/plus.svg')
+                    .removeClass('collapse');
             }
         }
     });

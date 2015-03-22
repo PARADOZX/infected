@@ -8,7 +8,7 @@ define(function (require, exports) {
         Interest    		= require('app/models/Interest');
 
     return Backbone.Collection.extend({
-        url: 'what.php', //define URL to backend 
+        url: 'http://localhost:3000/dummydata', //define URL to backend 
         model: Interest,
 		initialize : function()	{
             console.log('collection initialized');
