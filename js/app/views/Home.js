@@ -9,6 +9,7 @@ define(function (require, exports) {
         namespace           = require('app/namespace'),
         Interests           = require('app/collections/Interests'),
         InterestView        = require('app/views/InterestView'),
+        geolocation         = require('app/geolocation'),
         template = _.template(tpl);
 
     return Backbone.View.extend({
@@ -19,26 +20,6 @@ define(function (require, exports) {
 
             this.listenTo(this.collection, 'add', this.add);
             
-            // this.options = options || {};
-       
-            //facebookData object exists only if user had to sign in.
-            //debug v.1
-            // if(this.options.facebookData) {
-            //     console.log(this.options.facebookData);
-            // } else {
-            //     if(cookie.FBcookieExists) {
-            //         var sr = cookie.getCookie('fbsr');
-            //         if (sr) {
-            //             // cookie.parseSignedRequest(sr);
-            //             // fb.getFBdata();
-            //         } else alert('Error parsing cookie.  Please try again.');
-            //     } else alert('Error setting or finding cookie.  Please retry log in.')
-            // }
-
-            // namespace.collections = namespace.collections ? namespace.collections : {};
-
-            // this.collection = namespace.collections.interests = new Interests();
-
         },
         render: function() {
 
@@ -56,68 +37,31 @@ define(function (require, exports) {
                     navigator.geolocation.getCurrentPosition(function(position){
                         alert('called get current position');      //live  -- THIS IS THE PROBLEM!!! DOES NOT WORK ON MOBILE
 
-                        //send facebook data and position to server
-                        that.sendData(namespace.fbData, position)
-                            .done(function(data){ 
-                                // console.log(data);
+                        if(position) {
 
-                                //fetch query results from server after facebook data and position 
-                                //successfully sent to server 
-                                that.collection.fetch({        //THIS IS REDUNDANT MAYbE??   
-                                    success: function(coll, response) {
+                            //send facebook data and position to server
+                            function connectServer(cityState){
+                                that.sendData(namespace.fbData, position)
+                                    .done(function(data){ 
 
-                                    }
-                                });
+                                        //fetch query results from server after facebook data and position 
+                                        //successfully sent to server 
+                                        that.collection.fetch({        //THIS IS REDUNDANT MAYbE??   
+                                            success: function(coll, response) {
 
-                                // that.collection.add([       //live
-                                //     {
-                                //         interest: 'Snowboarding',
-                                //         matches: [
-                                //             { 
-                                //                 name: 'Ling Chiang',
-                                //                 city: 'Gaithersburg'
-                                //     },
-                                //     {
-                                //         name: 'Mike Tran',
-                                //         city: 'Rockville'
-                                //             }
-                                //         ]
-                                //     },
-                                //     {
-                                //         interest: 'Some band',
-                                //         matches: [
-                                //             {
-                                //                 name: 'Ling Chiang',
-                                //                 city: 'Gaithersburg'
-                                //             },
-                                //             {
-                                //                 name: 'Max Cho',
-                                //                 city: 'Pasadena'
-                                //             }
-                                //         ]
-                                //     },
-                                //     {
-                                //         interest: 'Taylor Swift',
-                                //         matches: [
-                                //             {
-                                //                 name: 'Koshie Macias',
-                                //                 city: 'Alexandria'
-                                //             },
-                                //             {
-                                //                 name: 'Max Cho',
-                                //                 city: 'Pasadena'
-                                //             }
-                                //         ]
-                                //     }
+                                            }
+                                        });
 
-                                // ]);
+                                        //if server update / query fails...
+                                        //....
+                                    })
+                                    //ajax fail.
+                                    .fail(that.fail);
+                            }
+                            
+                            geolocation.getUserCityState(position.coords.latitude, position.coords.longitude, connectServer);
 
-                                //if server update / query fails...
-                                //....
-                            })
-                            //ajax fail.
-                            .fail(that.fail);
-
+                        }
                     }, that.failgeolocation, {timeout: 10000, enableHighAccuracy: true});  //navigator.getCurrentPosition error callback and timeout option
                 } //if geolocation... add else 
             } //if namespace.fbData ... add else
