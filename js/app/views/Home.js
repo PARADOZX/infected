@@ -41,14 +41,18 @@ define(function (require, exports) {
 
                             //send facebook data and position to server
                             function connectServer(cityState){
+                                //persist user city state in returned geolocation object
+                                position.cityState = cityState;
+                                namespace.fbData.me.position = position;
+
                                 that.sendData(namespace.fbData, position)
                                     .done(function(data){ 
-
+                                        console.log(data);
                                         //fetch query results from server after facebook data and position 
                                         //successfully sent to server 
                                         that.collection.fetch({        //THIS IS REDUNDANT MAYbE??   
                                             success: function(coll, response) {
-
+                                                console.log(response);
                                             }
                                         });
 
@@ -59,6 +63,7 @@ define(function (require, exports) {
                                     .fail(that.fail);
                             }
                             
+                            //obtain user city state from lat lng
                             geolocation.getUserCityState(position.coords.latitude, position.coords.longitude, connectServer);
 
                         }
