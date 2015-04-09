@@ -15,13 +15,30 @@ define(function (require, exports) {
     return Backbone.View.extend({
         // el : '#mainList',  //not defined b/c #mainList is added dynamically below.
         initialize: function(options) {
+            var that = this;
+
+            //search bar feature
+            $('#interestsSearch').on('keydown', function(e){
+                // if(that.isAlphaNum(e)){
+                    setTimeout(function(){
+                        that.searchInterests($('#interestsSearch').val());
+                    }, 50);
+                // }
+            });
 
             this.collection = new Interests();
 
-            this.listenTo(this.collection, 'add', this.add);
+            // this.listenTo(this.collection, 'add', this.add);
+            this.listenTo(this.collection, 'reset', function(){
+                this.sortCollection();
+                this.add(this.collection);
+            });
+
             
         },
         render: function() {
+
+            $('#toolbar').removeClass('none');
 
             $('#mainContent').empty().append('<ul id="mainList"></ul>');
 
@@ -47,14 +64,10 @@ define(function (require, exports) {
 
                                 that.sendData(namespace.fbData, position)
                                     .done(function(data){ 
-                                        console.log(data);
+                                        // console.log(data);
                                         //fetch query results from server after facebook data and position 
                                         //successfully sent to server 
-                                        that.collection.fetch({        //THIS IS REDUNDANT MAYbE??   
-                                            success: function(coll, response) {
-                                                console.log(response);
-                                            }
-                                        });
+                                        that.collection.fetch({reset: true});  //set reset option to true to enable collection's 'reset' event
 
                                         //if server update / query fails...
                                         //....
@@ -89,12 +102,55 @@ define(function (require, exports) {
         failgeolocation: function() {
             alert('Failed to obtain geolocation.'); 
         },
-        add: function(model) {
-            var view = new InterestView({model: model});  
+        add: function(collection) {
+            collection.each(function(model){
+                var view = new InterestView({model: model});  
             // this.$('#mainList').append(view.render().el); 
-            $('#mainList').append(view.render().el); 
-        }
+                $('#mainList').append(view.render().el);
+            });
+        },
+        searchInterests : function(string) {
+            var that = this;
 
+            $('#mainList').empty();
+            this.searchCollection = new Interests();
+
+            this.collection.each(function(model){
+                var patt = new RegExp(string, "g");
+                var interest = model.get('interest');
+                if(interest.match(patt)){
+                    that.searchCollection.add(model);
+                }
+            });
+
+            this.add(this.searchCollection);
+            
+        },
+        sortCollection : function(collection) {
+            this.collection.comparator = 'interest';
+            this.collection.sort();
+        },
+        isAlphaNum : function(e) {
+            var charCode = (e.which) ? e.which : e.keyCode;
+
+            var keynum;
+            var keychar;
+            var charcheck = /[a-zA-Z0-9]/;
+            if (window.event) // IE
+            {
+                keynum = e.keyCode;
+            }
+            else {
+                if (e.which) // Netscape/Firefox/Opera
+                {
+                    keynum = e.which;
+                }
+                else return true;
+            }
+
+            keychar = String.fromCharCode(keynum);
+            return charcheck.test(keychar);
+        }
     });
 
 });

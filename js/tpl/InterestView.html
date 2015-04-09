@@ -13,7 +13,7 @@
 				    <div class="user-quote">"This is user's awesome quote"</div>
 				</div>
 				<div class="user-access">
-					<button>See Profile</button>
+					<input class="profile-button" type="button" value="Profile" onclick="location.href='user/<%= matches._id %>'" />
 				</div>
 			</li>
 		<% }); %>

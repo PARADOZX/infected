@@ -15,6 +15,7 @@ define(function (require, exports) {
         }, 
         render: function() {
             this.$el.html(template(this.model.toJSON()));
+            console.log(this.model.toJSON());
             return this;
         },
         events: {
