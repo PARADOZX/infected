@@ -9,6 +9,7 @@ define(function (require, exports) {
         namespace           = require('app/namespace'),
         Interests           = require('app/collections/Interests'),
         InterestView        = require('app/views/InterestView'),
+        // Profile             = require('app/models/Profile'),
         geolocation         = require('app/geolocation'),
         template = _.template(tpl);
 
@@ -74,6 +75,9 @@ define(function (require, exports) {
                                     })
                                     //ajax fail.
                                     .fail(that.fail);
+
+                                // var profile = new Profile({fbData : namespace.fbData});
+                                // console.log(profile);
                             }
                             
                             //obtain user city state from lat lng

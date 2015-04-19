@@ -7,13 +7,15 @@ define(function (require, exports) {
         HomeView    = require('app/views/Home'),
         cookie      = require('app/cookie_management'),
         namespace   = require('app/namespace'),
-        LoginView   = require('app/views/Login');
+        LoginView   = require('app/views/Login'), 
+        ProfileView = require('app/views/ProfileView');
         
     return Backbone.Router.extend({
 
         routes: {
             "": "home",
-            "login": "login"
+            "login": "login", 
+            "users/:id": "users"
         },
         home: function(){
             //prevents rendering of homeView unless logged into Facebook and fbData set.
@@ -33,6 +35,14 @@ define(function (require, exports) {
         login: function(){
             var loginView = new LoginView();
             loginView.render();
+        },
+        users: function(id){
+
+            //!!!!!!!!!!!!!!!  refactor sendData (saving user FB/location data to DB) so that it's backbone compatible (create a new model and 'save' it)
+            
+            var profile = new Profile({urlRoot : ''});
+            // var profileView = new ProfileView();
+            // profileView.render();
         }
 
     });
