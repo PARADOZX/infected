@@ -38,8 +38,6 @@ define(function (require, exports) {
         },
         users: function(id){
 
-            //!!!!!!!!!!!!!!!  refactor sendData (saving user FB/location data to DB) so that it's backbone compatible (create a new model and 'save' it)
-            
             var profile = new Profile({urlRoot : ''});
             // var profileView = new ProfileView();
             // profileView.render();

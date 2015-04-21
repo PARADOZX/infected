@@ -55,7 +55,7 @@ window.fbAsyncInit = function() {
 	    version    : 'v2.1' // use version 2.1
 	});
 
-	if(cookie.FBcookieExists(document.cookie)) {	//v.2
+	if(cookie.FBcookieExists(document.cookie)) {	
 		FB.getLoginStatus(function(response) { 	
 		    statusChangeCallback(response);
 		});

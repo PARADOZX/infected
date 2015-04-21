@@ -7,10 +7,7 @@ define(function (require, exports) {
         Backbone            = require('backbone');
 
     return Backbone.Model.extend({
-        defaults : {
-        	
-        }
-       
+        idAttribute: "_id"
     });
 
 });

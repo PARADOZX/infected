@@ -9,7 +9,7 @@ define(function (require, exports) {
         namespace           = require('app/namespace'),
         Interests           = require('app/collections/Interests'),
         InterestView        = require('app/views/InterestView'),
-        // Profile             = require('app/models/Profile'),
+        User                = require('app/models/User'),
         geolocation         = require('app/geolocation'),
         template = _.template(tpl);
 
@@ -19,7 +19,7 @@ define(function (require, exports) {
             var that = this;
 
             //search bar feature
-            $('#interestsSearch').on('keydown', function(e){
+            $('#interestsSearch').on('keydown', function(e) {
                 // if(that.isAlphaNum(e)){
                     setTimeout(function(){
                         that.searchInterests($('#interestsSearch').val());
@@ -30,7 +30,7 @@ define(function (require, exports) {
             this.collection = new Interests();
 
             // this.listenTo(this.collection, 'add', this.add);
-            this.listenTo(this.collection, 'reset', function(){
+            this.listenTo(this.collection, 'reset', function() {
                 this.sortCollection();
                 this.add(this.collection);
             });
@@ -58,26 +58,41 @@ define(function (require, exports) {
                         if(position) {
 
                             //send facebook data and position to server
-                            function connectServer(cityState){
+                            function connectServer(cityState) {
                                 //persist user city state in returned geolocation object
                                 position.cityState = cityState;
                                 namespace.fbData.me.position = position;
 
-                                that.sendData(namespace.fbData, position)
-                                    .done(function(data){ 
-                                        // console.log(data);
-                                        //fetch query results from server after facebook data and position 
-                                        //successfully sent to server 
-                                        that.collection.fetch({reset: true});  //set reset option to true to enable collection's 'reset' event
+                                // that.sendData(namespace.fbData, position)
+                                //     .done(function(data){ 
+                                //         // console.log(data);
+                                //         //fetch query results from server after facebook data and position 
+                                //         //successfully sent to server 
+                                //         that.collection.fetch({reset: true});  //set reset option to true to enable collection's 'reset' event
 
-                                        //if server update / query fails...
-                                        //....
-                                    })
-                                    //ajax fail.
-                                    .fail(that.fail);
+                                //         //if server update / query fails...
+                                //         //....
+                                //     })
+                                //     //ajax fail.
+                                //     .fail(that.fail);
 
-                                // var profile = new Profile({fbData : namespace.fbData});
-                                // console.log(profile);
+                                var user = new User({fbData : namespace.fbData});
+                                that.model = user;
+
+                                user.save(null, {
+                                    dataType: "text",  //since server does not return a JSON object upon success this is required for 
+                                                       //call to success callback 
+                                    success: function(model, response) {
+                                        that.collection.fetch({
+                                            reset: true,
+                                            success: function(model) {
+                                            }
+                                        });
+                                    },
+                                    error: function(model, response) {
+                                        that.fail();
+                                    }
+                                });
                             }
                             
                             //obtain user city state from lat lng

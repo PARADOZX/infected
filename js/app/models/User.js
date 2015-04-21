@@ -8,9 +8,11 @@ define(function (require, exports) {
 
     return Backbone.Model.extend({
         defaults : {
-        	fbData : ''
-        }
-       
+        	fbData : '',
+        },
+        urlRoot : 'http://localhost:3000/user',
+        idAttribute : '_id'
+    
     });
 
 });
