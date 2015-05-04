@@ -7,7 +7,7 @@ define(function (require, exports) {
         Backbone            = require('backbone');
 
     return Backbone.Model.extend({
-        idAttribute: "_id",
+    	urlRoot : 'http://localhost:3000/interests',
     });
 
 });

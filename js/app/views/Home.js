@@ -5,13 +5,12 @@ define(function (require, exports) {
     var $                   = require('jquery'),
         _                   = require('underscore'),
         Backbone            = require('backbone'),
-        tpl                 = require('text!tpl/Home.html'),
         namespace           = require('app/namespace'),
         Interests           = require('app/collections/Interests'),
+        SaveInterests       = require('app/models/SaveInterests'),
         InterestView        = require('app/views/InterestView'),
         User                = require('app/models/User'),
-        geolocation         = require('app/geolocation'),
-        template = _.template(tpl);
+        geolocation         = require('app/geolocation');
 
     return Backbone.View.extend({
         // el : '#mainList',  //not defined b/c #mainList is added dynamically below.
@@ -53,7 +52,7 @@ define(function (require, exports) {
 
                     //get current position of user.
                     navigator.geolocation.getCurrentPosition(function(position){
-                        alert('called get current position');      //live  -- THIS IS THE PROBLEM!!! DOES NOT WORK ON MOBILE
+                        // alert('called get current position');      //live  -- THIS IS THE PROBLEM!!! DOES NOT WORK ON MOBILE
 
                         if(position) {
 
@@ -63,37 +62,65 @@ define(function (require, exports) {
                                 position.cityState = cityState;
                                 namespace.fbData.me.position = position;
 
-                                // that.sendData(namespace.fbData, position)
-                                //     .done(function(data){ 
-                                //         // console.log(data);
-                                //         //fetch query results from server after facebook data and position 
-                                //         //successfully sent to server 
-                                //         that.collection.fetch({reset: true});  //set reset option to true to enable collection's 'reset' event
+                                //queries database for user
+                                $.ajax({
+                                    url : 'http://localhost:3000/user',
+                                    method : 'get',
+                                    data : {'id' : namespace.fbData.me.id}
+                                }).done(function(user){
+                                //if user already exists
+                                    if(user) {
 
-                                //         //if server update / query fails...
-                                //         //....
-                                //     })
-                                //     //ajax fail.
-                                //     .fail(that.fail);
+                                        //persist user model with _id/id set
+                                        that.model = new User(user);
 
-                                var user = new User({fbData : namespace.fbData});
-                                that.model = user;
-
-                                user.save(null, {
-                                    dataType: "text",  //since server does not return a JSON object upon success this is required for 
-                                                       //call to success callback 
-                                    success: function(model, response) {
-                                        that.collection.fetch({
-                                            reset: true,
-                                            success: function(model) {
+                                        //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
+                                        var saveInterests = new SaveInterests({fbData : namespace.fbData});
+                                        
+                                        saveInterests.save(null, {
+                                            dataType: 'text',
+                                            success: function() {
+                                                that.collection.setURL();
+                                                that.collection.fetch({reset:true});
+                                            },
+                                            error: function(){
+                                                that.fail();
                                             }
                                         });
-                                    },
-                                    error: function(model, response) {
-                                        that.fail();
+
+                                    } else {
+                                //if user does not exist
+                                        that.model = new User({fbData : namespace.fbData});
+
+                                        that.model.save(null, {
+                                            success: function(model, response) {
+
+                                                //create instance of user with _id/id set
+                                                that.model = new User(response[0]);
+
+                                                var model_id = that.model.get('_id');
+
+                                                namespace.fbData.me._id = model_id;
+
+                                                //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
+                                                var saveInterests = new SaveInterests({fbData : namespace.fbData});
+
+                                                saveInterests.save(null, {
+                                                    dataType: 'text',
+                                                    success: function() {
+                                                        that.collection.setURL();
+                                                        that.collection.fetch({reset:true});
+                                                    },
+                                                    error: function(){
+                                                        that.fail();
+                                                    }
+                                                });
+
+                                            }
+                                        })
                                     }
                                 });
-                            }
+                            } //end function connectServer
                             
                             //obtain user city state from lat lng
                             geolocation.getUserCityState(position.coords.latitude, position.coords.longitude, connectServer);
@@ -106,14 +133,6 @@ define(function (require, exports) {
         },
         events: {
           
-        },
-        sendData: function(fbData, position) {
-            return $.ajax({
-                url: 'http://localhost:3000', //set URL
-                // url: '', //set url          //live
-                type: 'get',
-                data: {fbData: fbData, position: position}
-            });
         },
         fail: function() {
             alert('Server error.  Please try again.');

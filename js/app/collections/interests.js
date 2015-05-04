@@ -9,11 +9,14 @@ define(function (require, exports) {
         Interest    		= require('app/models/Interest');
 
     return Backbone.Collection.extend({
-        url: 'http://localhost:3000/test', //define URL to backend 
+        url: 'http://localhost:3000/interests', //define URL to backend 
         model: Interest,
 		initialize : function()	{
-            this.url = 'http://localhost:3000/test?id=' + namespace.fbData.me.id;
-		}
+            // this.url = 'http://localhost:3000/interests?id=' + namespace.fbData.me.id;
+		},
+        setURL : function() {
+            this.url = 'http://localhost:3000/interests?id=' + namespace.fbData.me.id + '&city=' + namespace.fbData.me.position.cityState.city + '&state=' + namespace.fbData.me.position.cityState.state;
+        }
     });
 
 });

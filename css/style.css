@@ -4,7 +4,8 @@ html, body {
 }
 header {
   background-color: #3399FF;
-  height: 15%;
+  /*height: 15%;*/
+  height: 3em;
   width: 100%;
   padding-top: 1px;  /* to avoid collapsing margins */
 }
@@ -57,7 +58,6 @@ header {
 }
 .matches-users {
   position: relative;
-  /*border: 1px black dotted;*/
   margin: 10px;
   height: 5em;  
 }
@@ -110,4 +110,18 @@ header {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+}
+.user-profile {
+  padding: 10px;
+  border: 1px black solid;
+  height: 100%;
+}
+
+@media only screen and (max-width: 500px) {
+  .pic-holder {
+    display: none;
+  }
+  .user-access {
+    min-width: 70px;
+  }
 }

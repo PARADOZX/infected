@@ -8,6 +8,7 @@ define(function (require, exports) {
         cookie      = require('app/cookie_management'),
         namespace   = require('app/namespace'),
         LoginView   = require('app/views/Login'), 
+        User        = require('app/models/User'),
         ProfileView = require('app/views/ProfileView');
         
     return Backbone.Router.extend({
@@ -24,7 +25,7 @@ define(function (require, exports) {
                 var homeView = new HomeView();
                     homeView.render();
             } else {
-                if(!cookie.FBcookieExists(document.cookie)) {  // v.2
+                if(!cookie.FBcookieExists(document.cookie)) {  
                     var loginView = new LoginView();    
                     loginView.render();
                 } else {
@@ -37,10 +38,11 @@ define(function (require, exports) {
             loginView.render();
         },
         users: function(id){
+            //assign MongoDB id as both _id (alias of backbone ID for User Model) and as 'id' attribute (not '_id' so Mongo will recognize it)
+            var user = new User({_id:id});  
 
-            var profile = new Profile({urlRoot : ''});
-            // var profileView = new ProfileView();
-            // profileView.render();
+            var profile = new ProfileView({model:user});
+            profile.render();
         }
 
     });
