@@ -6,7 +6,9 @@ define(function (require, exports) {
         _                   = require('underscore'),
         Backbone            = require('backbone'),
         tpl                 = require('text!tpl/InterestView.html'),
-        template            = _.template(tpl);     
+        template            = _.template(tpl),
+        namespace           = require('app/namespace');
+        // io                  = require('socketio');     
 
     return Backbone.View.extend({
         tagName: 'li',
@@ -36,6 +38,11 @@ define(function (require, exports) {
                     .find('.icon-expand')
                         .attr('src', 'pics/icon/plus.svg')
                     .removeClass('collapse');
+            },
+            'click .chat-request' : function(e) {
+                // console.log(this.model);
+                e.preventDefault();
+                namespace.socket.emit('testing', 'whoooo');
             }
         }
     });

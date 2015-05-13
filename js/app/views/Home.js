@@ -10,7 +10,8 @@ define(function (require, exports) {
         SaveInterests       = require('app/models/SaveInterests'),
         InterestView        = require('app/views/InterestView'),
         User                = require('app/models/User'),
-        geolocation         = require('app/geolocation');
+        geolocation         = require('app/geolocation'),
+        io                  = require('socketio');
 
     return Backbone.View.extend({
         // el : '#mainList',  //not defined b/c #mainList is added dynamically below.
@@ -105,6 +106,7 @@ define(function (require, exports) {
                                                 //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
                                                 var saveInterests = new SaveInterests({fbData : namespace.fbData});
 
+                                                //update users interests in server with most up-to-date FB data
                                                 saveInterests.save(null, {
                                                     dataType: 'text',
                                                     success: function() {
@@ -116,6 +118,27 @@ define(function (require, exports) {
                                                     }
                                                 });
 
+                                                //initialize web socket listeners
+                                                namespace.socket.on('testing2', function(){
+                                                    console.log('WOW IT WORKS!!');
+                                                });
+                                                // namespace.socket.on('connect', function(){
+                                                    // console.log('user connected client side');
+                                                    
+                                                    // socket.on('open chat window',function(success){
+                                                    //     if(success){
+                                                    //         $('#chat_window').removeClass('none').prepend('<p>Chat with userID ' + success.otherUserID + ':');
+                                                    //     }
+                                                    // });
+                                                    
+                                                    // socket.on('chat message', function(msg){
+                                                    //     $('#messages').append($('<li>').text('User ' + msg.userID + ': ' + msg.msg)); 
+                                                    // });
+                                                    
+                                                    // socket.on('call to join', function(msg){
+                                                    //   socket.emit('join request user room', msg);    
+                                                    // });
+                                                // });
                                             }
                                         })
                                     }

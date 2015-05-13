@@ -23,13 +23,13 @@ require.config({
             exports: 'FB'
         }
     }
+
+
 });
 
-require(['backbone', 'app/router', 'jquery', 'app/namespace', 'app/fb', 'socketio', 'app/script'], function (Backbone, Router, $, namespace, fb, io, script) {
+require(['backbone', 'app/router', 'jquery', 'app/namespace', 'app/fb', 'socketio'], function (Backbone, Router, $, namespace, fb, io) {
 
-        script.init();
-
-        var io = io.connect('http://localhost:3000');
+        namespace.socket = io.connect('http://localhost:3000');
 
         namespace.router = new Router();
 
