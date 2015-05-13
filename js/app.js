@@ -5,6 +5,7 @@ require.config({
     paths: {
         app: '../app',
         tpl: '../tpl',
+        socketio : 'https://cdn.socket.io/socket.io-1.3.5'
         //debug v.1
         // 'facebook': 'http://connect.facebook.net/en_US/all'  //  remove http: when not on localhost
     },
@@ -24,14 +25,13 @@ require.config({
     }
 });
 
-require(['backbone', 'app/router', 'jquery', 'app/namespace', 'app/fb'], function (Backbone, Router, $, namespace, fb) {
+require(['backbone', 'app/router', 'jquery', 'app/namespace', 'app/fb', 'socketio', 'app/script'], function (Backbone, Router, $, namespace, fb, io, script) {
+
+        script.init();
+
+        var io = io.connect('http://localhost:3000');
 
         namespace.router = new Router();
-
-        // $("body").on("click", ".back-button", function (event) {
-        //     event.preventDefault();
-        //     window.history.back();
-        // });
 
         Backbone.history.start();
         

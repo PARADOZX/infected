@@ -1,0 +1,2 @@
+db.users.insert({"_id":ObjectId("AAAAAAAAAAAAAAAAAAAAAAAA"), "id":"12345678901234567", "email":"test@test.gmail.com", "first_name":"james", "last_name":"chiang", "name":"james chiang", "position":{"cityState":{"city":"Houston", "state":"TX"}}})
+db.interests.update({"name":"kurupt"}, {$push:{"users":{"_id":ObjectId("AAAAAAAAAAAAAAAAAAAAAAAB"), "id":"12345678901234568", "email":"test1@test.gmail.com", "first_name":"max", "last_name":"cho", "name":"max cho", "position":{"cityState":{"city":"Los Angeles", "state":"CA"}}}}})
