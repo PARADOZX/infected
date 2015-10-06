@@ -11,6 +11,7 @@ define(function (require, exports) {
         	fbData : '',
         },
         urlRoot : 'http://localhost:3000/user',
+        // urlRoot : 'http://localhost:5000/user',
         idAttribute : '_id'
     
     });

@@ -14,17 +14,16 @@ define(function (require, exports) {
         io                  = require('socketio');
 
     return Backbone.View.extend({
-        // el : '#mainList',  //not defined b/c #mainList is added dynamically below.
+        // el added dynamically below.
         initialize: function(options) {
+
             var that = this;
 
             //search bar feature
             $('#interestsSearch').on('keydown', function(e) {
-                // if(that.isAlphaNum(e)){
-                    setTimeout(function(){
+                setTimeout(function(){
                         that.searchInterests($('#interestsSearch').val());
-                    }, 50);
-                // }
+                }, 50);
             });
 
             this.collection = new Interests();
@@ -35,7 +34,9 @@ define(function (require, exports) {
                 this.add(this.collection);
             });
 
-            
+            //initialize web socket connection and listeners
+            this.initSocketListeners();
+           
         },
         render: function() {
 
@@ -59,6 +60,7 @@ define(function (require, exports) {
 
                             //send facebook data and position to server
                             function connectServer(cityState) {
+
                                 //persist user city state in returned geolocation object
                                 position.cityState = cityState;
                                 namespace.fbData.me.position = position;
@@ -66,10 +68,10 @@ define(function (require, exports) {
                                 //queries database for user
                                 $.ajax({
                                     url : 'http://localhost:3000/user',
+                                    // url : 'http://localhost:5000/user',
                                     method : 'get',
                                     data : {'id' : namespace.fbData.me.id}
                                 }).done(function(user){
-                                //if user already exists
                                     if(user) {
 
                                         //persist user model with _id/id set
@@ -77,10 +79,16 @@ define(function (require, exports) {
 
                                         //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
                                         var saveInterests = new SaveInterests({fbData : namespace.fbData});
-                                        
+
                                         saveInterests.save(null, {
                                             dataType: 'text',
                                             success: function() {
+                                                //save user id in namespace for later reference when requesting chat
+                                                namespace.fbData.me._id = user._id;
+
+                                                //emit user id to server via websockets to initiate a socket.join
+                                                namespace.socket.emit('user id', user._id);
+
                                                 that.collection.setURL();
                                                 that.collection.fetch({reset:true});
                                             },
@@ -90,7 +98,7 @@ define(function (require, exports) {
                                         });
 
                                     } else {
-                                //if user does not exist
+
                                         that.model = new User({fbData : namespace.fbData});
 
                                         that.model.save(null, {
@@ -100,8 +108,12 @@ define(function (require, exports) {
                                                 that.model = new User(response[0]);
 
                                                 var model_id = that.model.get('_id');
-
+                                                
+                                                //save user id in namespace for later reference when requesting chat
                                                 namespace.fbData.me._id = model_id;
+
+                                                //emit user id to server via websockets to initiate a socket.join
+                                                namespace.socket.emit('user id', model_id);
 
                                                 //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
                                                 var saveInterests = new SaveInterests({fbData : namespace.fbData});
@@ -118,34 +130,13 @@ define(function (require, exports) {
                                                     }
                                                 });
 
-                                                //initialize web socket listeners
-                                                namespace.socket.on('testing2', function(){
-                                                    console.log('WOW IT WORKS!!');
-                                                });
-                                                // namespace.socket.on('connect', function(){
-                                                    // console.log('user connected client side');
-                                                    
-                                                    // socket.on('open chat window',function(success){
-                                                    //     if(success){
-                                                    //         $('#chat_window').removeClass('none').prepend('<p>Chat with userID ' + success.otherUserID + ':');
-                                                    //     }
-                                                    // });
-                                                    
-                                                    // socket.on('chat message', function(msg){
-                                                    //     $('#messages').append($('<li>').text('User ' + msg.userID + ': ' + msg.msg)); 
-                                                    // });
-                                                    
-                                                    // socket.on('call to join', function(msg){
-                                                    //   socket.emit('join request user room', msg);    
-                                                    // });
-                                                // });
                                             }
                                         })
                                     }
                                 });
                             } //end function connectServer
                             
-                            //obtain user city state from lat lng
+                            //obtain user city state from lat lng and callback 
                             geolocation.getUserCityState(position.coords.latitude, position.coords.longitude, connectServer);
 
                         }
@@ -166,9 +157,39 @@ define(function (require, exports) {
         add: function(collection) {
             collection.each(function(model){
                 var view = new InterestView({model: model});  
-            // this.$('#mainList').append(view.render().el); 
                 $('#mainList').append(view.render().el);
             });
+        },
+        initSocketListeners : function() {
+
+            namespace.socket = io.connect('http://localhost:3000', {'forceNew': true});
+            // namespace.socket = io.connect('http://localhost:5000', {'forceNew': true});
+
+            //initialize web socket listeners
+            namespace.socket.on('open chat window', function(msg){
+                if(msg) {
+                    //STOPPED HERE
+                       
+                }
+            });
+
+            // namespace.socket.on('connect', function(){
+                // console.log('user connected client side');
+                
+                // socket.on('open chat window',function(success){
+                //     if(success){
+                //         $('#chat_window').removeClass('none').prepend('<p>Chat with userID ' + success.otherUserID + ':');
+                //     }
+                // });
+                
+                // socket.on('chat message', function(msg){
+                //     $('#messages').append($('<li>').text('User ' + msg.userID + ': ' + msg.msg)); 
+                // });
+                
+                // socket.on('call to join', function(msg){
+                //   socket.emit('join request user room', msg);    
+                // });
+            // });
         },
         searchInterests : function(string) {
             var that = this;
@@ -190,27 +211,6 @@ define(function (require, exports) {
         sortCollection : function(collection) {
             this.collection.comparator = 'interest';
             this.collection.sort();
-        },
-        isAlphaNum : function(e) {
-            var charCode = (e.which) ? e.which : e.keyCode;
-
-            var keynum;
-            var keychar;
-            var charcheck = /[a-zA-Z0-9]/;
-            if (window.event) // IE
-            {
-                keynum = e.keyCode;
-            }
-            else {
-                if (e.which) // Netscape/Firefox/Opera
-                {
-                    keynum = e.which;
-                }
-                else return true;
-            }
-
-            keychar = String.fromCharCode(keynum);
-            return charcheck.test(keychar);
         }
     });
 

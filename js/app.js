@@ -29,8 +29,6 @@ require.config({
 
 require(['backbone', 'app/router', 'jquery', 'app/namespace', 'app/fb', 'socketio'], function (Backbone, Router, $, namespace, fb, io) {
 
-        namespace.socket = io.connect('http://localhost:3000');
-
         namespace.router = new Router();
 
         Backbone.history.start();

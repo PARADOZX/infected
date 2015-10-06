@@ -6,21 +6,22 @@ define(function (require, exports) {
         _                   = require('underscore'),
         Backbone            = require('backbone'),
         tpl                 = require('text!tpl/ProfileView.html'),
-        template            = _.template(tpl);     
+        template            = _.template(tpl),
+        namespace           = require('app/namespace'); 
 
     return Backbone.View.extend({
         el: '#mainContent',
 		initialize: function() {
-
+            //disconnects any websocket connection to avoid multiple occurences upon page refresh after exiting view
+            namespace.socket.disconnect();
         }, 
         render: function() {
-            console.log(this.model);
             var that = this;
-          this.model.fetch({
-            success: function(model, response){
-                that.$el.html(template(model.toJSON()));
-            }
-          });
+            this.model.fetch({
+                success: function(model, response){
+                    that.$el.html(template(model.toJSON()));
+                }
+            });
         },
         events: {
           

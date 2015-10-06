@@ -9,14 +9,16 @@ define(function (require, exports) {
         namespace   = require('app/namespace'),
         LoginView   = require('app/views/Login'), 
         User        = require('app/models/User'),
-        ProfileView = require('app/views/ProfileView');
+        ProfileView = require('app/views/ProfileView'),
+        ChatView    = require('app/views/ChatView');
         
     return Backbone.Router.extend({
 
         routes: {
             "": "home",
             "login": "login", 
-            "users/:id": "users"
+            "users/:id": "users",
+            "chat/:id": "chat"
         },
         home: function(){
             //prevents rendering of homeView unless logged into Facebook and fbData set.
@@ -43,6 +45,10 @@ define(function (require, exports) {
 
             var profile = new ProfileView({model:user});
             profile.render();
+        }, 
+        chat: function(id){
+            console.log(id);
+            var chat = new ChatView({targetID:id});  //pass id to view
         }
 
     });

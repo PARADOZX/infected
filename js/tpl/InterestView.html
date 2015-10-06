@@ -13,8 +13,9 @@
 				    <div class="user-quote">"This is user's awesome quote"</div>
 				</div>
 				<div class="user-access">
-					<input class="profile-button" type="button" value="Profile" onclick="location.href='#users/<%= matches._id %>'" />
-					<input class="profile-button chat-request" type="button" value="Start Chat" />
+					<input class="user-access-button" type="button" value="Profile" onclick="location.href='#users/<%= matches._id %>'" />
+					<!-- <input data-userID="<%= matches._id %>" class="profile-button chat-request" type="button" value="Start Chat" /> -->
+					<input class="user-access-button" type="button" value="Chat" onclick="location.href='#chat/<%= matches._id %>'" />
 				</div>
 			</li>
 		<% }); %>

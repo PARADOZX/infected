@@ -13,11 +13,9 @@ define(function (require, exports) {
     return Backbone.View.extend({
         tagName: 'li',
 		initialize: function() {
-
         }, 
         render: function() {
             this.$el.html(template(this.model.toJSON()));
-            console.log(this.model.toJSON());
             return this;
         },
         events: {
@@ -39,11 +37,15 @@ define(function (require, exports) {
                         .attr('src', 'pics/icon/plus.svg')
                     .removeClass('collapse');
             },
-            'click .chat-request' : function(e) {
-                // console.log(this.model);
-                e.preventDefault();
-                namespace.socket.emit('testing', 'whoooo');
-            }
+            // 'click .chat-request' : function(e) {
+                // e.preventDefault();
+
+                // //emit user and target ids to server via websocket connection
+                // namespace.socket.emit('user target id', {
+                //     user_id : namespace.fbData.me._id,
+                //     target_id : e.target.attributes[0].nodeValue
+                // });
+            // }
         }
     });
 

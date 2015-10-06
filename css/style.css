@@ -74,7 +74,7 @@ header {
 .pointer {
   cursor: pointer;
 }
-.profile-button {
+.user-access-button {
   display: block;
   width: 100%;
   height: 50%;
