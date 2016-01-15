@@ -15,7 +15,6 @@ define(function (require, exports) {
         io                  = require('socketio');
 
     return Backbone.View.extend({
-        // el added dynamically below.
         initialize: function(options) {
 
             var that = this;
@@ -29,13 +28,11 @@ define(function (require, exports) {
 
             this.collection = new Interests();
 
-            // this.listenTo(this.collection, 'add', this.add);
             this.listenTo(this.collection, 'reset', function() {
                 this.sortCollection();
                 this.add(this.collection);
             });
 
-            //initialize web socket connection and listeners
             this.initSocketListeners();
            
         },
@@ -47,7 +44,7 @@ define(function (require, exports) {
 
             var that = this;
 
-            //if fbData populated with facebook information from FB.login
+            //if namespace.fbData populated with facebook information from FB.login
             if(namespace.fbData) {
 
                 //if browser has geolocation
@@ -55,100 +52,19 @@ define(function (require, exports) {
 
                     //get current position of user.
                     navigator.geolocation.getCurrentPosition(function(position){
-                        // alert('called get current position');      //live  -- THIS IS THE PROBLEM!!! DOES NOT WORK ON MOBILE
-
+                        
                         if(position) {
-
-                            //send facebook data and position to server
-                            // function connectServer(cityState) {
-
-                            // var connectServer = function(cityState){    //test
-
-                            //     //persist user city state in returned geolocation object
-                            //     position.cityState = cityState;
-                            //     namespace.fbData.me.position = position;
-
-                            //     //queries database for user
-                            //     $.ajax({
-                            //         url : 'http://localhost:3000/user',
-                            //         // url : 'http://localhost:5000/user',
-                            //         // url : 'https://fathomless-ravine-2480.herokuapp.com/user',
-                            //         method : 'get',
-                            //         data : {'id' : namespace.fbData.me.id}
-                            //     }).done(function(user){
-                            //         if(user) {
-
-                            //             //persist user model with _id/id set
-                            //             that.model = new User(user);
-
-                            //             //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
-                            //             var saveInterests = new SaveInterests({fbData : namespace.fbData});
-
-                            //             saveInterests.save(null, {
-                            //                 dataType: 'text',
-                            //                 success: function() {
-                            //                     //save user id in namespace for later reference when requesting chat
-                            //                     namespace.fbData.me._id = user._id;
-
-                            //                     //emit user id to server via websockets to initiate a socket.join
-                            //                     namespace.socket.emit('user id', user._id);
-
-                            //                     that.collection.setURL();
-                            //                     that.collection.fetch({reset:true});
-                            //                 },
-                            //                 error: function(){
-                            //                     that.fail();
-                            //                 }
-                            //             });
-
-                            //         } else {
-
-                            //             that.model = new User({fbData : namespace.fbData});
-
-                            //             that.model.save(null, {
-                            //                 success: function(model, response) {
-
-                            //                     //create instance of user with _id/id set
-                            //                     that.model = new User(response[0]);
-
-                            //                     var model_id = that.model.get('_id');
-                                                
-                            //                     //save user id in namespace for later reference when requesting chat
-                            //                     namespace.fbData.me._id = model_id;
-
-                            //                     //emit user id to server via websockets to initiate a socket.join
-                            //                     namespace.socket.emit('user id', model_id);
-
-                            //                     //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
-                            //                     var saveInterests = new SaveInterests({fbData : namespace.fbData});
-
-                            //                     //update users interests in server with most up-to-date FB data
-                            //                     saveInterests.save(null, {
-                            //                         dataType: 'text',
-                            //                         success: function() {
-                            //                             that.collection.setURL();
-                            //                             that.collection.fetch({reset:true});
-                            //                         },
-                            //                         error: function(){
-                            //                             that.fail();
-                            //                         }
-                            //                     });
-
-                            //                 }
-                            //             })
-                            //         }
-                            //     });
-                            // } //end function connectServer
-                            
-                            //obtain user city state from lat lng and callback 
+                         
+                            //obtain user's city and state from geolocation coordinates.  pass position to callback function that.connectServer
                             geolocation.getUserCityState(position.coords.latitude, position.coords.longitude, that.connectServer.bind(that), position);
 
                         }
                     }, 
+                    //this is the geolocation fail function
                     function(){                                       
                             //San Francisco default city state if geolocation off or unavailable
                             geolocation.getUserCityState(37.7833, -122.4167, that.connectServer.bind(that));   
-                    }, {timeout: 10000, enableHighAccuracy: true});  //navigator.getCurrentPosition error callback and timeout option
+                    }, {timeout: 10000, enableHighAccuracy: true});  
                 } //if geolocation... add else 
             } //if namespace.fbData ... add else
      
@@ -160,11 +76,11 @@ define(function (require, exports) {
             //position argument will be undefined if geolocation fails.
             var position = position || {};  
 
-            //persist user city state in returned geolocation object
+            //persist user's city and state in returned geolocation object if geolocation succesful or in a empty position obj if failed
             position.cityState = cityState;
             namespace.fbData.me.position = position;
 
-            //queries database for user
+            //checks if user aleady exists based on FB id
             $.ajax({
                 url : 'http://localhost:3000/user',
                 // url : 'http://localhost:5000/user',
@@ -189,6 +105,7 @@ define(function (require, exports) {
                             //emit user id to server via websockets to initiate a socket.join
                             namespace.socket.emit('user id', user._id);
 
+                            //calls set URL to set query string params
                             that.collection.setURL();
                             that.collection.fetch({reset:true});
                         },
@@ -247,10 +164,9 @@ define(function (require, exports) {
         },
         add: function(collection) {
             collection.each(function(model){
-// console.log(model.get('matches').length);
-var empty = false;
-if(model.get('matches').length === 0) empty = true;
-var view = new InterestView({model: model, empty: empty});  
+                var empty = false;
+                if(model.get('matches').length === 0) empty = true;
+                var view = new InterestView({model: model, empty: empty});  
                 $('#mainList').append(view.render().el);
             });
         },
@@ -266,8 +182,7 @@ var view = new InterestView({model: model, empty: empty});
             namespace.socket.on('open chat window', function(msg){
                 if(msg){
                     var chatView = new ChatView({target_id : msg.target_id}); 
-                    // chatView.render();
-                
+                    
                     that.renderView(chatView);
                 }
             });
@@ -283,28 +198,11 @@ var view = new InterestView({model: model, empty: empty});
                 
                 var chatView = new ChatView({target_id : msg.requester_id, message : msg.message, type : 'receive'});
 
-                // chatView.render();
                 that.renderView(chatView);
-            });
-
-            // namespace.socket.on('connect', function(){
-                // console.log('user connected client side');
+            });          
                 
-                // socket.on('open chat window',function(success){
-                //     if(success){
-                //         $('#chat_window').removeClass('none').prepend('<p>Chat with userID ' + success.otherUserID + ':');
-                //     }
-                // });
-                
-                // socket.on('chat message', function(msg){
-                //     $('#messages').append($('<li>').text('User ' + msg.userID + ': ' + msg.msg)); 
-                // });
-                
-                // socket.on('call to join', function(msg){
-                //   socket.emit('join request user room', msg);    
-                // });
-            // });
         },
+        //checks if a view was previously open and calls the close method if so.  
         renderView : function(view) {
             if(this.currentView) {
                 this.currentView.close();

@@ -28,46 +28,7 @@ define(function (require, exports) {
                 namespace.socket.emit('join request room', {target_id : this.options.target_id, user_id : namespace.fbData.me._id});
 
             this.fetchOtherUserInfo();
-            // if(this.options.type === 'receive') {
-            //     namespace.socket.emit('join request room', {target_id : this.options.target_id, user_id : namespace.fbData.me._id});
-
-            //     var otherUser = new User({_id : this.options.target_id});
-            //     otherUser.fetch({
-            //         success: function(model, response){
-            //             that.model = model;
-                        
-            //             that.hideMainContent();
-            
-            //             that.$el.html(template(namespace.fbData.me));
-
-            //             that.pushToChat(that.model.get('first_name'), that.options.message);
-                        
-            //             that.initSocketListeners();
-            //         }
-            //     });
-            // } else {
-
-            //     //test
-            //     var otherUser = new User({_id : this.options.target_id});
-            //     otherUser.fetch({
-            //         success: function(model, response){
-            //             that.model = model;
-
-            //             that.hideMainContent();
-            
-            //             that.$el.html(template(namespace.fbData.me));
-
-            //             that.initSocketListeners();
-            //         }
-            //     });
-                
-            //     // this.hideMainContent();
-            
-            //     // this.$el.html(template(namespace.fbData.me));
-
-            //     // this.initSocketListeners();
-
-            // } 
+                    
         },
         fetchOtherUserInfo: function() {
             var that = this;
@@ -80,7 +41,6 @@ define(function (require, exports) {
 
                     that.hideMainContent();
             
-                    // that.$el.html(template(namespace.fbData.me));
                     that.$el.html(template({user : namespace.fbData.me, target : response}));
 
                     if(that.options.type === 'receive') 
@@ -98,16 +58,6 @@ define(function (require, exports) {
         initSocketListeners: function() {
 
             var that = this;
-
-            // if(this.options.type === 'receive') {
-            //     namespace.socket.on('receive chat message', function(msg){
-            //         that.pushToChat(that.model.get('first_name'), msg.message);
-            //     });
-            // } else {
-            //     namespace.socket.on('receive chat message', function(msg){
-            //         that.pushToChat(that.model.get('first_name'), msg.message);
-            //     });
-            // }
     
             namespace.socket.on('target confirmed available', function(){
                 that.targetAvailable = true;
@@ -131,7 +81,6 @@ define(function (require, exports) {
         pushToChat: function(user, msg) {
             if (this.options.type != 'receive') {
                 setTimeout(this.checkTarget.bind(this), 2000);
-                // $('#chat-content').append('<div>target not available</div>');
             }
 
             $('#chat-content').append('<div>' + user + ':  ' + msg + '</div>');
