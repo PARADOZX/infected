@@ -9,7 +9,7 @@ function getLocation()
 	}
 }
 
-function getUserCityState(latitude, longitude, callback){
+function getUserCityState(latitude, longitude, callback, position){
     $.ajax({
         type: 'GET',
         dataType: "json",
@@ -38,7 +38,7 @@ function getUserCityState(latitude, longitude, callback){
 		            }
 	            }
 	        }
-	        callback(cityState);
+	        callback(cityState, position);
         },
         error: function () { console.log('error'); } 
     }); 

@@ -35,7 +35,7 @@ function statusChangeCallback(response) {
         'into Facebook.';
         FB.login(function(response){
         	if (response.status === 'connected') getFbInfo(response);
-        });
+        }, {scope: 'user_likes'});
     }
 }
 

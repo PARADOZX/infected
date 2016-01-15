@@ -9,6 +9,7 @@ define(function (require, exports) {
     return Backbone.Model.extend({
     	urlRoot : 'http://localhost:3000/interests',
     	// urlRoot : 'http://localhost:5000/interests',
+    	// urlRoot : 'https://fathomless-ravine-2480.herokuapp.com/interests',
     });
 
 });

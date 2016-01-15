@@ -1,5 +1,5 @@
 <div class="matches-interests">
-	<div class="matches-top"><%= interest %><img class="right icon-expand" src="pics/icon/plus.svg" /></div>
+	<div class="matches-top"><%= interest.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) %><img class="right icon-expand" src="pics/icon/plus.svg" /></div>
 	<div class="matches-userslist none">
 		<ul>
 		<% _.each(matches, function(matches) { %>
@@ -15,7 +15,10 @@
 				<div class="user-access">
 					<input class="user-access-button" type="button" value="Profile" onclick="location.href='#users/<%= matches._id %>'" />
 					<!-- <input data-userID="<%= matches._id %>" class="profile-button chat-request" type="button" value="Start Chat" /> -->
-					<input class="user-access-button" type="button" value="Chat" onclick="location.href='#chat/<%= matches._id %>'" />
+					
+					<!-- v.3 comment out.  revised 'onclick' -->
+					<!-- <input class="user-access-button" type="button" value="Chat" onclick="location.href='#chat/<%= matches._id %>'" /> -->
+					<input class="user-access-button" type="button" value="Chat" id="open-chat" data-id="<%= matches._id %>" />
 				</div>
 			</li>
 		<% }); %>

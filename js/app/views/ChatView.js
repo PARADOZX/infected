@@ -6,38 +6,173 @@ define(function (require, exports) {
         _                   = require('underscore'),
         Backbone            = require('backbone'),
         tpl                 = require('text!tpl/ChatView.html'),
+        User                = require('app/models/User'),
         template            = _.template(tpl),
         namespace           = require('app/namespace'); 
 
     return Backbone.View.extend({
-        el: '#mainContent',
+        el: '#chat-overlay',
 		initialize: function(options) {
 
             this.options = options || {};
 
-            this.initSocketListeners();
+            this.resetSocketListeners();
             
         }, 
         render: function() {
-            console.log('chat view rendered.');
-        },
-        initSocketListeners: function() {
+
+            //if user is receiving a chat request fetch the requesting user's information and save as view's model
             var that = this;
 
-            namespace.socket.emit('user target id', {
-                user_id : namespace.fbData.me._id,
-                target_id : this.options.targetID
-            });
+            if(this.options.type === 'receive') 
+                namespace.socket.emit('join request room', {target_id : this.options.target_id, user_id : namespace.fbData.me._id});
 
-            namespace.socket.on('open chat window', function(msg){
-                if(msg){
-                    that.render();
+            this.fetchOtherUserInfo();
+            // if(this.options.type === 'receive') {
+            //     namespace.socket.emit('join request room', {target_id : this.options.target_id, user_id : namespace.fbData.me._id});
+
+            //     var otherUser = new User({_id : this.options.target_id});
+            //     otherUser.fetch({
+            //         success: function(model, response){
+            //             that.model = model;
+                        
+            //             that.hideMainContent();
+            
+            //             that.$el.html(template(namespace.fbData.me));
+
+            //             that.pushToChat(that.model.get('first_name'), that.options.message);
+                        
+            //             that.initSocketListeners();
+            //         }
+            //     });
+            // } else {
+
+            //     //test
+            //     var otherUser = new User({_id : this.options.target_id});
+            //     otherUser.fetch({
+            //         success: function(model, response){
+            //             that.model = model;
+
+            //             that.hideMainContent();
+            
+            //             that.$el.html(template(namespace.fbData.me));
+
+            //             that.initSocketListeners();
+            //         }
+            //     });
+                
+            //     // this.hideMainContent();
+            
+            //     // this.$el.html(template(namespace.fbData.me));
+
+            //     // this.initSocketListeners();
+
+            // } 
+        },
+        fetchOtherUserInfo: function() {
+            var that = this;
+
+            var otherUser = new User({_id : this.options.target_id});
+
+            otherUser.fetch({
+                success: function(model, response){
+                    that.model = model;
+
+                    that.hideMainContent();
+            
+                    // that.$el.html(template(namespace.fbData.me));
+                    that.$el.html(template({user : namespace.fbData.me, target : response}));
+
+                    if(that.options.type === 'receive') 
+                        that.pushToChat(that.model.get('first_name'), that.options.message);
+
+                    that.initSocketListeners();
+
+                    that.initEventListeners();
                 }
             });
+        },
+        initEventListeners: function() {
+            $('body').keypress(this.pressEnter);
+        },
+        initSocketListeners: function() {
 
-            namespace.socket.on('invite to chat', function(msg){
-                console.log('invited to chat');
+            var that = this;
+
+            // if(this.options.type === 'receive') {
+            //     namespace.socket.on('receive chat message', function(msg){
+            //         that.pushToChat(that.model.get('first_name'), msg.message);
+            //     });
+            // } else {
+            //     namespace.socket.on('receive chat message', function(msg){
+            //         that.pushToChat(that.model.get('first_name'), msg.message);
+            //     });
+            // }
+    
+            namespace.socket.on('target confirmed available', function(){
+                that.targetAvailable = true;
             });
+
+
+            namespace.socket.on('receive chat message', function(msg){
+                that.pushToChat(that.model.get('first_name'), msg.message);
+            });
+
+        },
+        pressEnter: function(e){
+            if(e.keyCode === 13) $('#chat-send').trigger('click');
+        },
+        resetSocketListeners: function() {
+            namespace.socket.removeAllListeners('receive chat message');
+        },
+        hideMainContent : function() {
+            $('#mainContent, #toolbar').css('display', 'none');
+        }, 
+        pushToChat: function(user, msg) {
+            if (this.options.type != 'receive') {
+                setTimeout(this.checkTarget.bind(this), 2000);
+                // $('#chat-content').append('<div>target not available</div>');
+            }
+
+            $('#chat-content').append('<div>' + user + ':  ' + msg + '</div>');
+
+            var chatWindow = document.getElementById('chat-content');
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        },         
+        targetAvailable : false,        
+        checkTarget : function() {
+            if(!this.targetAvailable)
+                $('#chat-content').append('<div>Target not available</div>');
+        },
+        events: {
+            'click #chat-send' : function(e) {
+                if($('#chat-input>input').val() !== '') {
+                    var message = $('#chat-input>input').val();
+                    this.pushToChat("Me", message);
+                    $('#chat-input>input').val('');
+
+                    var options = {
+                        target_id:this.options.target_id,
+                        user_id: namespace.fbData.me._id,
+                        user_name: namespace.fbData.me.first_name,
+                        message: message
+                    };
+
+                    if(this.options.type !== 'receive') {
+                        namespace.socket.emit('send id to target', options);
+                        this.options.type = 'receive';
+                    } else {
+                        namespace.socket.emit('send chat message', options);
+                    }
+                }
+            },
+            'click #chat-back' : 'close'
+        },
+        close: function() {
+            this.undelegateEvents();
+            $('body').off('keypress', this.pressEnter);
+            $('#mainContent, #toolbar').css('display', 'block');
+            $('#chat-container').remove();
         }
     });
 });

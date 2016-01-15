@@ -11,6 +11,7 @@ define(function (require, exports) {
     return Backbone.Collection.extend({
         url: 'http://localhost:3000/interests', //define URL to backend 
         // url: 'http://localhost:5000/interests', //define URL to backend 
+        // url: 'https://fathomless-ravine-2480.herokuapp.com/interests', //define URL to backend 
         model: Interest,
 		initialize : function()	{
             // this.url = 'http://localhost:3000/interests?id=' + namespace.fbData.me.id;
@@ -18,6 +19,7 @@ define(function (require, exports) {
         setURL : function() {
             this.url = 'http://localhost:3000/interests?id=' + namespace.fbData.me.id + '&city=' + namespace.fbData.me.position.cityState.city + '&state=' + namespace.fbData.me.position.cityState.state;
             // this.url = 'http://localhost:5000/interests?id=' + namespace.fbData.me.id + '&city=' + namespace.fbData.me.position.cityState.city + '&state=' + namespace.fbData.me.position.cityState.state;
+            // this.url = 'https://fathomless-ravine-2480.herokuapp.com/interests?id=' + namespace.fbData.me.id + '&city=' + namespace.fbData.me.position.cityState.city + '&state=' + namespace.fbData.me.position.cityState.state;
         }
     });
 

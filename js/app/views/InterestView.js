@@ -7,15 +7,19 @@ define(function (require, exports) {
         Backbone            = require('backbone'),
         tpl                 = require('text!tpl/InterestView.html'),
         template            = _.template(tpl),
+        tpl2                 = require('text!tpl/NoMatchesInterestView.html'),
+        template2            = _.template(tpl2),
         namespace           = require('app/namespace');
         // io                  = require('socketio');     
 
     return Backbone.View.extend({
         tagName: 'li',
-		initialize: function() {
+		initialize: function(options) {
+            this.options = options || {};
         }, 
         render: function() {
-            this.$el.html(template(this.model.toJSON()));
+            if(this.options.empty === true) this.$el.html(template2(this.model.toJSON()));
+                else this.$el.html(template(this.model.toJSON()));
             return this;
         },
         events: {
@@ -37,6 +41,13 @@ define(function (require, exports) {
                         .attr('src', 'pics/icon/plus.svg')
                     .removeClass('collapse');
             },
+            //v.3  add click #open-chat event listener
+            'click #open-chat' : function(e) {
+                namespace.socket.emit('user target id', {
+                    user_id : namespace.fbData.me._id,
+                    target_id : $(e.target).data('id')
+                });
+            }
             // 'click .chat-request' : function(e) {
                 // e.preventDefault();
 
