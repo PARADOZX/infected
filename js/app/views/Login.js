@@ -15,16 +15,10 @@ define(function (require, exports) {
             this.$el.html(template);
         },
         events: {
-            "click #loginFB" : function() {     //v.2
+            "click #loginFB" : function() {     
                 fb.checkLoginState();
             }
         }
-        // onkeypress: function (event) {
-        //     if (event.keyCode === 13) { // enter key pressed
-        //         event.preventDefault();
-        //     }
-        // }
-
     });
 
 });

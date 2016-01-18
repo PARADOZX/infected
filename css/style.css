@@ -62,7 +62,7 @@ header {
   height: auto; 
   min-width: 10px; 
   max-width: 20px;
-  
+  cursor: pointer;
   /* vertical center image*/
   position: relative;
   top: 50%;
