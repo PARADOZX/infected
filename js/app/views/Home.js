@@ -93,6 +93,10 @@ define(function (require, exports) {
                     //persist user model with _id/id set
                     this.model = new User(user);
 
+                    var model_id = this.model.get('_id');
+
+                    namespace.fbData.me._id = model_id;
+
                     //Hack... cannot get Mongodb to properly parse JSON in ajax post body; using backbone obj instead.. no problems with this.
                     var saveInterests = new SaveInterests({fbData : namespace.fbData});
 
