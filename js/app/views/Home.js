@@ -12,19 +12,13 @@ define(function (require, exports) {
         ChatView            = require('app/views/ChatView'),
         User                = require('app/models/User'),
         geolocation         = require('app/geolocation'),
-        io                  = require('socketio');
+        io                  = require('socketio'),
+        fb                  = require('app/fb');
 
     return Backbone.View.extend({
         initialize: function(options) {
 
             var that = this;
-
-            //search bar feature
-            $('#interestsSearch').on('keydown', function(e) {
-                setTimeout(function(){
-                        that.searchInterests($('#interestsSearch').val().toLowerCase());
-                }, 50);
-            });
 
             this.collection = new Interests();
 
@@ -34,11 +28,11 @@ define(function (require, exports) {
             });
 
             this.initSocketListeners();
-           
+            this.renderLoggedIn();
+            this.bindEvents();
+            
         },
         render: function() {
-
-            $('#toolbar').removeClass('none');
 
             $('#mainContent').empty().append('<ul id="mainList"></ul>');
 
@@ -52,7 +46,7 @@ define(function (require, exports) {
 
                     //get current position of user.
                     navigator.geolocation.getCurrentPosition(function(position){
-                        
+            console.log('geolocation is good');            
                         if(position) {
                          
                             //obtain user's city and state from geolocation coordinates.  pass position to callback function that.connectServer
@@ -61,7 +55,8 @@ define(function (require, exports) {
                         }
                     }, 
                     //this is the geolocation fail function
-                    function(){                                       
+                    function(){     
+            console.log('geolocation failed');                                  
                             //San Francisco default city state if geolocation off or unavailable
                             geolocation.getUserCityState(37.7833, -122.4167, that.connectServer.bind(that));   
                     }, {timeout: 10000, enableHighAccuracy: true});  
@@ -174,6 +169,22 @@ define(function (require, exports) {
                 $('#mainList').append(view.render().el);
             });
         },
+        bindEvents : function() {
+            var that = this;
+
+            //search bar feature
+            $('#interestsSearch').on('keydown', function(e) {
+                setTimeout(function(){
+                        that.searchInterests($('#interestsSearch').val().toLowerCase());
+                }, 50);
+            });
+
+            $('#logout-button').on('click', function(){
+                fb.logOut();
+                that.renderLoggedOut();
+                namespace.router.navigate('login', true); 
+            });
+        },
         initSocketListeners : function() {
 
             var that = this;
@@ -205,6 +216,14 @@ define(function (require, exports) {
                 that.renderView(chatView);
             });          
                 
+        },
+        renderLoggedIn : function() {
+            $('#toolbar').removeClass('none');
+            $('#main-header').append('<button id="logout-button">log out</button');
+        },
+        renderLoggedOut : function() {
+            $('#toolbar').addClass('none');
+            $('#logout-button').remove();
         },
         //checks if a view was previously open and calls the close method if so.  
         renderView : function(view) {

@@ -10,12 +10,12 @@ define(function (require, exports){
 		namespace		= require('app/namespace'),
 		cookie 			= require('app/cookie_management');	// v.2
 
-// function logOut()
-// {
-// 	FB.logout(function(response) {
-//   		console.log('user is now logged out');
-// 	});
-// }
+function logOut()
+{
+	FB.logout(function(response) {
+  		console.log('user is now logged out');
+	});
+}
 
 
 function statusChangeCallback(response) {
@@ -93,6 +93,7 @@ function getFbInfo(response)
 
 
 exports.checkLoginState = checkLoginState;
+exports.logOut = logOut;
 
 
 

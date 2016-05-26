@@ -9,7 +9,6 @@ define(function (require, exports) {
         namespace   = require('app/namespace'),
         LoginView   = require('app/views/Login'), 
         User        = require('app/models/User'),
-        // HomeView    = require('app/views/HomeView'),    //test
         ProfileView = require('app/views/ProfileView'),
         ChatView    = require('app/views/ChatView');
         
@@ -25,7 +24,6 @@ define(function (require, exports) {
             //prevents rendering of homeView unless logged into Facebook and fbData set.
             if(cookie.FBcookieExists(document.cookie) && namespace.fbData) {  
                 console.log(namespace.fbData);   
-                console.log(HomeView);
                 var homeView = new HomeView();
                     homeView.render();
             } else {

@@ -15,8 +15,9 @@ header {
   overflow: hidden;
 }
 #app-logo {
+  display: inline-block;
   height: 75%;
-  width: 10%;
+  width: 80%;
   margin: 5px 0 0 25px;
 }
 #chat-content {
@@ -73,6 +74,9 @@ header {
 }
 .right {
   float: right;
+}
+#logout-button {
+  display: inline-block;
 }
 #mainWrapper {
   max-width: 960px;
