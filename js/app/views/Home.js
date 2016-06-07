@@ -180,6 +180,10 @@ define(function (require, exports) {
             });
 
             $('#logout-button').on('click', function(){
+
+                //check if chat window is open; closes it if it is
+                if(that.currentView) that.currentView.close();
+
                 fb.logOut();
                 that.renderLoggedOut();
                 namespace.router.navigate('login', true); 
@@ -219,10 +223,10 @@ define(function (require, exports) {
         },
         renderLoggedIn : function() {
             $('#toolbar').removeClass('none');
-            $('#main-header').append('<button id="logout-button">log out</button');
+            if($('#logout-button').length === 0) $('#main-header').append('<button id="logout-button">log out</button');
         },
         renderLoggedOut : function() {
-            $('#toolbar').addClass('none');
+            $('#toolbar').addClass('none').css('display', 'none');
             $('#logout-button').remove();
         },
         //checks if a view was previously open and calls the close method if so.  
